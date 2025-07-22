@@ -104,7 +104,7 @@ DATABASES = {
 }
 }
 
-AUTH_USER_MODEL = 'home.USER'
+AUTH_USER_MODEL = 'home.User'
 
 
 # Password validation
