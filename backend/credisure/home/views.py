@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView 
-from .serializer import MyTokensObtainPairSerializer 
+from .serializer import MyTokensObtainPairSerializer , UserRegisterSerializer
 from rest_framework import status
 # Create your views here.
 
@@ -13,20 +13,16 @@ User = get_user_model()
 # Login Or register
 class RegisterView(APIView):
     def post(self, request):
-        username = request.data.get('username')
-        password = request.data.get('password')
-        email = request.data.get('email')
-        role = request.data.get('role','borrower')
-
-        if User.objects.filter(username=username).exists():
-            return Response({'error':'Username is already exists !'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        user = User.objects.create_user(username=username, password=password, email=email,role=role)
-        if role == 'admin':
-            user.is_staff = True
-            user.save()
-
-        return Response({'message':'User created successfully !'}, status=status.HTTP_201_CREATED)
+        print("Incoming request data:", request.data)  # <--- DEBUG
+        serializer = UserRegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response(
+                {'Message': f'User {user.username} created successfully as {user.role}!'},
+                status=status.HTTP_201_CREATED
+            )
+        print("Serializer errors:", serializer.errors)  # <--- DEBUG
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # Logout 
