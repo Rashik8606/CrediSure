@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -149,4 +150,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-ADMIN_SECRET_KEY = 'mJMonddG0_UwJJ6Qbfo8f0sPOHXyT339P3Nqaga62yI'        
+from dotenv import load_dotenv
+
+load_dotenv()
+
+ADMIN_SECRET_KEY = os.getenv('ADMIN_SECRET_KEY') 
