@@ -11,6 +11,7 @@ class loanRequestForm(models.Model):
         (BORROWER, 'borrower'),
         (ADMIN, 'admin'),
     ]
+    
     borrower = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='loans')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     purpose = models.CharField(max_length=200)

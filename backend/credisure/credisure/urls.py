@@ -17,12 +17,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from django.http import JsonResponse
+
+def health_test(request):
+    return JsonResponse({'status':'backend is working'})
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/token/refresh/',TokenRefreshView.as_view(),name='token_refresh'),
-    path('api/loans',include('loans.urls')),
+    path('api/loans/',include('loans.urls')),
     path('',include('home.urls')),
+    path('api/test/',health_test),
 ]
     
