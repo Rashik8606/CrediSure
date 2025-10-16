@@ -7,5 +7,6 @@ urlpatterns = [
     path('api/home/',HomePage.as_view(),name='home'),
     path('api/register/',RegisterView.as_view(),name='register'),
     path('api/logout/',LogoutView.as_view(),name='logout'),
+    
    
 ]
