@@ -5,8 +5,8 @@ from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView 
-from .serializer import MyTokensObtainPairSerializer , UserRegisterSerializer
-from rest_framework import status
+from .serializer import MyTokensObtainPairSerializer , UserRegisterSerializer, ChangePasswordSerializer
+from rest_framework import status,generics,permissions
 # Create your views here.
 
 User = get_user_model()
@@ -44,4 +44,22 @@ class MyTokenObtainPairView(TokenObtainPairView):
 class HomePage(APIView):
     def get(self, request):
         return Response({'message':'hello we are credisure !'})
+    
+
+class ChangePasswordView(generics.UpdateAPIView):
+    serializer_class = ChangePasswordSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+    
+    def update(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, context = {'request':request})
+        serializer.is_valid(raise_exception = True)
+
+        user = self.get_object()
+        user.set_password(serializer.validated_data['new_password'])
+        user.save()
+
+        return Response({'detail':'Password update successfully completed..'}, status=status.HTTP_200_OK)
     

@@ -2,6 +2,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from django.conf import settings
 from .models import User
+from django.contrib.auth.password_validation import validate_password
 
 
 class MyTokensObtainPairSerializer(TokenObtainPairSerializer):
@@ -51,3 +52,14 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         )
         return user
     
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required = True, write_only = True)
+    new_password = serializers.CharField(required = True, write_only = True, validators = [validate_password])
+
+
+    def validate_old_password(self, value):
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError('Old Password is Incorrect..')
+        return value
