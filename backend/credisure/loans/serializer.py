@@ -3,9 +3,9 @@ from .models import loanRequestForm
 
 
 class loanSerializer(serializers.ModelSerializer):
-    
+    borrower_username = serializers.CharField(source = 'borrower.username', read_only = True)
     class Meta:
         model = loanRequestForm
         fields = '__all__'
-        read_only_fields = ['borrower','status']
+        read_only_fields = ['borrower']
         
