@@ -25,9 +25,10 @@ def health_test(request):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    
     path('api/token/refresh/',TokenRefreshView.as_view(),name='token_refresh'),
     path('api/loans/',include('loans.urls')),
-    path('api/',include('home.urls')),
+    path('',include('home.urls')),
     path('api/test/',health_test),
 ]
     

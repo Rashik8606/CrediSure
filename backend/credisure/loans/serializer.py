@@ -3,6 +3,7 @@ from .models import loanRequestForm
 
 
 class loanSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = loanRequestForm
         fields = '__all__'

@@ -28,4 +28,7 @@ class LoanAdminManageView(generics.RetrieveUpdateAPIView):
     permission_classes = [permissions.IsAdminUser]
 
 
-
+class LoanAdminListView(generics.ListAPIView):
+    queryset = loanRequestForm.objects.all()
+    serializer_class = loanSerializer
+    permission_classes = [permissions.IsAdminUser]
