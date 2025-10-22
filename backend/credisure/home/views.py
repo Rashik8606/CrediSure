@@ -41,6 +41,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokensObtainPairSerializer
 
 
+
 class HomePage(APIView):
     def get(self, request):
         return Response({'message':'hello we are credisure !'})
