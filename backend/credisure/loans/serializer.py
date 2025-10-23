@@ -7,5 +7,5 @@ class loanSerializer(serializers.ModelSerializer):
     class Meta:
         model = loanRequestForm
         fields = '__all__'
-        read_only_fields = ['borrower']
+        read_only_fields = ['id','borrower','status','created_at', 'updated_at', 'kyc_status']
         
