@@ -6,7 +6,8 @@ from rest_framework.permissions import BasePermission
 from .utils import send_email
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
+from django.contrib.auth import get_user_model
+from django.core.mail import EmailMultiAlternatives
 
 # Create your views here.
 
@@ -17,15 +18,16 @@ class LoanCreateListView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
 
+    '''IF YOU NEED TO BORROWER FORM .UNCOMMENT THIS SECTION'''
     # email templates 
-    admin_email_subject_template = "New Loan Request from {borrower}"
-    admin_email_message_template = """
-    Borrower : {borrower}
-    Amount : {amount}
-    Purpose : {purpose}
+    # admin_email_subject_template = "New Loan Request from {borrower}"
+    # admin_email_message_template = """
+    # Borrower : {borrower}
+    # Amount : {amount}
+    # Purpose : {purpose}
     
-    Please review this loan request in the admin dashboard
-        """
+    # Please review this loan request in the admin dashboard
+    #     """
 
     def get_queryset(self):
         return loanRequestForm.objects.filter(borrower=self.request.user)
@@ -35,6 +37,8 @@ class LoanCreateListView(generics.ListCreateAPIView):
         serializer.is_valid(raise_exception=True)
         loan = serializer.save(borrower=self.request.user)
 
+
+        ''' SENDING EMAIL LOGIC '''
         # Email sending logic here...
         from django.contrib.auth import get_user_model
         User = get_user_model()
@@ -43,13 +47,19 @@ class LoanCreateListView(generics.ListCreateAPIView):
 
         subject = f"New Loan Request from {request.user.username}"
         message = f"""
-        Borrower: {request.user.username}
-        Amount: {loan.amount}
-        Purpose: {loan.purpose}
-
-        Please review this loan request in the admin dashboard
+        <html>
+        <body style="font-family:Arial,sans-serif; background-color:#f9f9f9; padding:20px;">
+            <div style="background-color:#ffffff; border-radius:8px; padding:20px; max-width:600px; margin:auto; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                <h2 style="color:#007bff;">New Loan Request</h2>
+                <p><b>Borrower:</b> {request.user.username}</p>
+                <p><b>Amount:</b> ₹{loan.amount}</p>
+                <p><b>Purpose:</b> {loan.purpose}</p>
+                <p>Please review this request in the admin dashboard.</p>
+            </div>
+        </body>
+        </html>
         """
-        send_email(subject, message, admin_emails)
+        send_email(subject, message, admin_emails, html=True)
 
         return Response({'id': loan.id}, status=status.HTTP_201_CREATED)
 
@@ -67,29 +77,42 @@ class LoanAdminManageView(generics.RetrieveUpdateAPIView):
     permission_classes = [isCustomAdmin]
 
     # email templates
-    borrower_email_subject_template = "Your Loan Request has been {status}"
-    borrower_email_message_template = """
-    Hello {borrower}
+    # borrower_email_subject_template = "Your Loan Request has been {status}"
+    # borrower_email_message_template = """
+    # Hello {borrower}
     
-    Your Loan request of Amount ${amount} has been {status}
+    # Your Loan request of Amount ${amount} has been {status}
     
-    
-    Thank You 
-    
-    """
+    # Thanks Choosing Credisure 
 
+
+    
+    # Thank You 
+    # Rashik
+    # CEO of Credisure
+    
+    # """
 
     def perform_update(self, serializer):
         loan = serializer.save() #update the loan
         print("Loan updated:", loan)
 
-        subject = self.borrower_email_subject_template.format(status = loan.status.capitalize())
-        message = self.borrower_email_message_template.format(
-            borrower = loan.borrower.username,
-            amount = loan.amount,
-            status = loan.status
-        )
-        send_email(subject, message, [loan.borrower.email])
+        subject = f"Your Loan Request has been {loan.status.capitalize()}"
+        message = f"""
+        <html>
+        <body style="font-family:Arial,sans-serif; background-color:#f9f9f9; padding:20px;">
+            <div style="background-color:#ffffff; border-radius:8px; padding:20px; max-width:600px; margin:auto; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                <h2 style="color:#007bff;">Loan Update - Credisure</h2>
+                <p>Hi <b>{loan.borrower.username}</b>,</p>
+                <p>Your loan request of <b>₹{loan.amount}</b> has been <b>{loan.status.upper()}</b>.</p>
+                <p>Thank you for choosing <b>Credisure</b> — we appreciate your trust in us.</p>
+                <br>
+                <p style="font-size:14px; color:#555;">Best regards,<br><b>Rashik</b><br>CEO, Credisure</p>
+            </div>
+        </body>
+        </html>
+        """
+        send_email(subject, message, [loan.borrower.email],html=True)
 
 
 # Loans list view Admin
@@ -111,6 +134,36 @@ class LoanKycUploadView(APIView):
         serializer = loanSerializer(loan, data = request.data, partial = True)
         if serializer.is_valid():
             serializer.save()
+
+            User = get_user_model()
+            admins = User.objects.filter(role = 'admin')
+            admin_emails = [admin.email for admin in admins]
+    
+            subject = f"KYC Completed by {request.user.username}"
+            message = f"""
+            <html>
+            <body style="font-family:Arial,sans-serif; background-color:#f9f9f9; padding:20px;">
+                <div style="background-color:#ffffff; border-radius:8px; padding:20px; max-width:600px; margin:auto; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                    <h2 style="color:#28a745;">KYC Submitted</h2>
+                    <p>Borrower <b>{request.user.username}</b> has completed their KYC verification.</p>
+                    <p>Please review the attached documents in the admin panel.</p>
+                </div>
+            </body>
+            </html>
+            """
+
+            email = EmailMultiAlternatives(subject, '', to=admin_emails)
+            email.attach_alternative(message, 'text/html')
+            
+            if loan.aadhaar_front:
+                email.attach_file(loan.aadhaar_front.path)
+            if loan.aadhaar_back:
+                email.attach_file(loan.aadhaar_back.path)
+            if loan.pan_card:
+                email.attach_file(loan.pan_card.path)
+
+            email.send(fail_silently = False)
+
             return Response({'message':'KYC Upload Successfully completed..'}, status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
