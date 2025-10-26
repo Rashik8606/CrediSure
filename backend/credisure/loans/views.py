@@ -40,26 +40,26 @@ class LoanCreateListView(generics.ListCreateAPIView):
 
         ''' SENDING EMAIL LOGIC '''
         # Email sending logic here...
-        from django.contrib.auth import get_user_model
-        User = get_user_model()
-        admins = User.objects.filter(role='admin')
-        admin_emails = [admin.email for admin in admins ]
+        # from django.contrib.auth import get_user_model
+        # User = get_user_model()
+        # admins = User.objects.filter(role='admin')
+        # admin_emails = [admin.email for admin in admins ]
 
-        subject = f"New Loan Request from {request.user.username}"
-        message = f"""
-        <html>
-        <body style="font-family:Arial,sans-serif; background-color:#f9f9f9; padding:20px;">
-            <div style="background-color:#ffffff; border-radius:8px; padding:20px; max-width:600px; margin:auto; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
-                <h2 style="color:#007bff;">New Loan Request</h2>
-                <p><b>Borrower:</b> {request.user.username}</p>
-                <p><b>Amount:</b> ₹{loan.amount}</p>
-                <p><b>Purpose:</b> {loan.purpose}</p>
-                <p>Please review this request in the admin dashboard.</p>
-            </div>
-        </body>
-        </html>
-        """
-        send_email(subject, message, admin_emails, html=True)
+        # subject = f"New Loan Request from {request.user.username}"
+        # message = f"""
+        # <html>
+        # <body style="font-family:Arial,sans-serif; background-color:#f9f9f9; padding:20px;">
+        #     <div style="background-color:#ffffff; border-radius:8px; padding:20px; max-width:600px; margin:auto; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+        #         <h2 style="color:#007bff;">New Loan Request</h2>
+        #         <p><b>Borrower:</b> {request.user.username}</p>
+        #         <p><b>Amount:</b> ₹{loan.amount}</p>
+        #         <p><b>Purpose:</b> {loan.purpose}</p>
+        #         <p>Please review this request in the admin dashboard.</p>
+        #     </div>
+        # </body>
+        # </html>
+        # """
+        # send_email(subject, message, admin_emails, html=True)
 
         return Response({'id': loan.id}, status=status.HTTP_201_CREATED)
 
