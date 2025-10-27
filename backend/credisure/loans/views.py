@@ -143,6 +143,13 @@ class LoanKycUploadView(APIView):
             message = f"""
             <html>
             <body style="font-family:Arial,sans-serif; background-color:#f9f9f9; padding:20px;">
+             <div style="background-color:#ffffff; border-radius:8px; padding:20px; max-width:600px; margin:auto; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                 <h2 style="color:#007bff;">New Loan Request</h2>
+                 <p><b>Borrower:</b> {request.user.username}</p>
+                 <p><b>Amount:</b> ₹{loan.amount}</p>
+                 <p><b>Purpose:</b> {loan.purpose}</p>
+                 <p>Please review this request in the admin dashboard.</p>
+             </div>
                 <div style="background-color:#ffffff; border-radius:8px; padding:20px; max-width:600px; margin:auto; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
                     <h2 style="color:#28a745;">KYC Submitted</h2>
                     <p>Borrower <b>{request.user.username}</b> has completed their KYC verification.</p>
