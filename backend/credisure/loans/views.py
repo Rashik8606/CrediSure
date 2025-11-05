@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import loanRequestForm
+from .models import loanRequestForm,EmiSchedule
 from .serializer import loanSerializer
 from rest_framework import generics, permissions, status
 from rest_framework.permissions import BasePermission
@@ -8,6 +8,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from django.core.mail import EmailMultiAlternatives
+from rest_framework import viewsets
+from rest_framework.decorators import action
+from django.utils import timezone
+
 
 # Create your views here.
 
@@ -76,22 +80,7 @@ class LoanAdminManageView(generics.RetrieveUpdateAPIView):
     serializer_class = loanSerializer
     permission_classes = [isCustomAdmin]
 
-    # email templates
-    # borrower_email_subject_template = "Your Loan Request has been {status}"
-    # borrower_email_message_template = """
-    # Hello {borrower}
-    
-    # Your Loan request of Amount ${amount} has been {status}
-    
-    # Thanks Choosing Credisure 
 
-
-    
-    # Thank You 
-    # Rashik
-    # CEO of Credisure
-    
-    # """
 
     def perform_update(self, serializer):
         loan = serializer.save() #update the loan
@@ -174,3 +163,30 @@ class LoanKycUploadView(APIView):
             return Response({'message':'KYC Upload Successfully completed..'}, status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+
+
+class LoanViewSet(viewsets.ModelViewSet):
+    queryset = loanRequestForm.objects.all()
+    serializer_class = loanSerializer
+
+    @action(detail=True, methods=['post'])
+    def approve(self, request, pk=None):
+        loan = self.get_object()
+        loan.status = 'approved'
+        loan.save()
+        return Response({'status':'approved'})
+    
+    @action(detail=True, methods=['get'])
+    def emis(self, request, pk=None):
+        loan = self.get_object()
+        emi_id = request.data.get('emi_id')
+        emi = get_object_or_404(EmiSchedule, id=emi_id, loan=loan)
+        emi.paid = True
+        emi.paid_at = timezone.now()
+        emi.save()
+
+
+        if not loan.emis.filter(paid=False).exists():
+            loan.status = 'completed'
+            loan.save()
+        return Response({'paid': True})

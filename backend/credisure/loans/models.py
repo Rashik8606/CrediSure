@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from decimal import Decimal
+from django.utils import timezone
 # Create your models here.
 
 
@@ -25,7 +27,9 @@ class loanRequestForm(models.Model):
     status = models.CharField(max_length=20,choices=STATUS_CHOISES, default='pending')
     created_at  = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    #EMI FIELDS
+    interest_rate = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('12.00'))
+    starts_date = models.DateField(default=timezone.now)
     # KYC Verification
     aadhaar_number = models.CharField(max_length=12, blank=True, null=True)
     pan_number = models.CharField(max_length=10, blank=True, null=True)
@@ -39,3 +43,17 @@ class loanRequestForm(models.Model):
     def __str__(self):
         return f'{self.borrower.username} - {self.amount}'
     
+
+class EmiSchedule(models.Model):
+    loan = models.ForeignKey(loanRequestForm, on_delete=models.CASCADE, related_name='emis')
+    month_number = models.IntegerField()
+    due_date = models.DateField()
+    emi_amount = models.DecimalField(max_digits=12, decimal_places=2)
+    principal_componets = models.DecimalField(max_digits=12, decimal_places=2)
+    interest_componets = models.DecimalField(max_digits=12, decimal_places=2)
+    remaining_balance = models.DecimalField(max_digits=12, decimal_places=2)
+    paid = models.BooleanField(default=False)
+    paid_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['month_number']
