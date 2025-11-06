@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import loanRequestForm,EmiSchedule
-from .serializer import loanSerializer
+from .serializer import loanSerializer,EmiScheduleSerializer
 from rest_framework import generics, permissions, status
 from rest_framework.permissions import BasePermission
 from .utils import send_email
@@ -11,6 +11,7 @@ from django.core.mail import EmailMultiAlternatives
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from django.utils import timezone
+
 
 
 # Create your views here.
@@ -190,3 +191,11 @@ class LoanViewSet(viewsets.ModelViewSet):
             loan.status = 'completed'
             loan.save()
         return Response({'paid': True})
+
+
+class LoanEmiListView(generics.ListAPIView):
+    serializer_class = EmiScheduleSerializer
+
+    def get_queryset(self):
+        loan_id = self.kwargs['loan_id']
+        return EmiSchedule.objects.filter(loan_id = loan_id).order_by('month_number')

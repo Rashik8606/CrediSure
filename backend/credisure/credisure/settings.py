@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'home',
     'loans',
+    'django_extensions',
 
     
 ]

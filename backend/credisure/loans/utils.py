@@ -28,7 +28,7 @@ def generate_emi_schedule_for_loan(loan):
     monthly_rate = (annual_rate / Decimal('12'))/Decimal('100')
 
     if monthly_rate == 0:
-        emi = (P / N).quantize(Decimal('0.01')), rounding = ROUND_HALF_UP
+        emi = (P / N).quantize(Decimal('0.01'), rounding = ROUND_HALF_UP)
     else:
         one_plus_r_row_n = (Decimal('1') + monthly_rate) ** N
         emi = (P * monthly_rate * one_plus_r_row_n / (one_plus_r_row_n - Decimal('1')))
