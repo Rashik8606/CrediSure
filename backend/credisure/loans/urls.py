@@ -8,8 +8,7 @@ from .views import( LoanCreateListView,
 from rest_framework.routers import DefaultRouter
 
 
-router = DefaultRouter()
-router.register(r'loans', LoanViewSet, basename='loan')
+
 
 
 urlpatterns = [
@@ -23,5 +22,4 @@ urlpatterns = [
     path('<int:loan_id>/emi/', LoanViewSet.as_view({'get': 'emis'}), name='loan-emi'),
     path('<int:loan_id>/pay_emi/',LoanViewSet.as_view({'post':'pay_emi'}),name='loan-pay-emi'),
     path('<int:loan_id>/emi-schedule/',LoanEmiListView.as_view(),name='loan-emi-schedule'),
-    path('',include(router.urls)),
 ]

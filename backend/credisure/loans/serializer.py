@@ -6,7 +6,7 @@ from .models import loanRequestForm, EmiSchedule
 class EmiScheduleSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmiSchedule
-        fields = ['id','month_number','due_date','emi_amount','principal_component','interest_component','paid','paid_at']
+        fields = '__all__'
 
 class loanSerializer(serializers.ModelSerializer):
     borrower_username = serializers.CharField(source = 'borrower.username', read_only = True)

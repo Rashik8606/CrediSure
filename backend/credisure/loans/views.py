@@ -198,4 +198,7 @@ class LoanEmiListView(generics.ListAPIView):
 
     def get_queryset(self):
         loan_id = self.kwargs['loan_id']
-        return EmiSchedule.objects.filter(loan_id = loan_id).order_by('month_number')
+        print('DEBUG LOAN ID',loan_id)
+        qs = EmiSchedule.objects.filter(loan_id = loan_id).order_by('month_number')
+        print('DEBUG COUNT',qs.count())
+        return qs
