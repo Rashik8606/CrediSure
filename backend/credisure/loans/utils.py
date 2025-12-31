@@ -49,8 +49,8 @@ def generate_emi_schedule_for_loan(loan):
             emi_amount = emi
             remaining = (balance - principal_comp).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
 
-        due_date = starts_date + relativedelta(month=m)
-        schedule = ({
+        due_date = starts_date + relativedelta(months=m)
+        schedule.append ({
             'month_number':m,
             'due_date':due_date,
             'emi_amount':emi_amount,
@@ -66,9 +66,8 @@ def generate_emi_schedule_for_loan(loan):
 
 def create_and_save_emi_schedule(loan):
     rows = generate_emi_schedule_for_loan(loan)
-    objs = []
-    for r in rows:
-        objs.append(EmiSchedule(
+    objs = [
+        EmiSchedule(
             loan = loan,
             month_number = r['month_number'],
             due_date = r['due_date'],
@@ -76,6 +75,7 @@ def create_and_save_emi_schedule(loan):
             principal_component = r['principal_component'],
             interest_component = r['interest_component'],
             remaining_balance = r['remaining_balance']
-        ))
+        ) for r in rows
+    ]
     with transaction.atomic():
         EmiSchedule.objects.bulk_create(objs)

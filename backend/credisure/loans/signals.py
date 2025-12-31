@@ -4,8 +4,8 @@ from .models import loanRequestForm, EmiSchedule
 from .utils import create_and_save_emi_schedule
 
 
+@receiver(post_save, sender=loanRequestForm)
 def create_schedule_on_approval(sender, instance, created, **kwargs):
     if instance.status == 'approved':
-        exists = EmiSchedule.objects.filter(loan=instance).exists()
-        if not exists:
+        if not EmiSchedule.objects.filter(loan=instance).exists():
             create_and_save_emi_schedule(instance)
