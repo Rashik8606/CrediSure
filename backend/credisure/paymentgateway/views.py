@@ -65,7 +65,7 @@ class VerifyEmiPaymentsView(APIView):
         try:
             client.utility.verify_payment_signature({
                 'razorpay_order_id':data['order_id'],
-                'razorpay_payment_is':data['payment_id'],
+                'razorpay_payment_id':data['payment_id'],
                 'razorpay_signature':data['signature']
             })
 
