@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'home',
     'loans',
     'django_extensions',
+    'paymentgateway'
 
     
 ]
@@ -174,4 +175,7 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 
+#PAYMENT GATEWAY /////
 
+RAZORPAY_KEY_ID = 'rzp_test_S09ozgPzW0gIvh'
+RAZORPAY_KEY_SECRET = 'KQNZIM7c762W4fxF2NKOg7wv'

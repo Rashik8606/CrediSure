@@ -26,6 +26,7 @@ urlpatterns = [
     
     path('api/token/refresh/',TokenRefreshView.as_view(),name='token_refresh'),
     path('api/loans/',include('loans.urls')),
+    path('api/payments/',include('paymentgateway.urls')),
     path('',include('home.urls')),
     
 ]
