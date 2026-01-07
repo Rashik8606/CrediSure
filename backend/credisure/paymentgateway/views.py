@@ -26,6 +26,17 @@ class CreateEmiPaymentView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
+        if emi.loan.borrower != request.user:
+            return Response(
+                {'error':'Unauthrized User'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        if EmiPayment.objects.filter(emi=emi, status='success').exists():
+            return Response(
+                {'error':'EMI Already Paid'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
         client = razorpay.Client(
             auth=(settings.RAZORPAY_KEY_ID , settings.RAZORPAY_KEY_SECRET)
         )
@@ -70,6 +81,15 @@ class VerifyEmiPaymentsView(APIView):
             })
 
             payment = EmiPayment.objects.get(order_id = data['order_id'])
+
+            if payment.loan.borrower != request.user:
+                return Response(
+                    {
+                        'error':'Unauthrized'
+                    },
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            
             payment.payment_id = data['payment_id']
             payment.status = 'success'
             payment.paid_at = timezone.now()
