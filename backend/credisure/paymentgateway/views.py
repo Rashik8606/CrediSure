@@ -14,10 +14,13 @@ from .models import EmiSchedule, EmiPayment
 
 class CreateEmiPaymentView(APIView):
     permission_classes = [IsAuthenticated]
+        
 
     def post(self, request):
+        print("🔥 EMI PAYMENT HIT")
+        print(request.data)
         emi_id = request.data.get('emi_id')
-
+        
         try:
             emi = EmiSchedule.objects.get(id=emi_id, paid = False)
         except EmiSchedule.DoesNotExist:
@@ -75,12 +78,12 @@ class VerifyEmiPaymentsView(APIView):
 
         try:
             client.utility.verify_payment_signature({
-                'razorpay_order_id':data['order_id'],
-                'razorpay_payment_id':data['payment_id'],
-                'razorpay_signature':data['signature']
+                'razorpay_order_id':data['razorpay_order_id'],
+                'razorpay_payment_id':data['razorpay_payment_id'],
+                'razorpay_signature':data['razorpay_signature']
             })
 
-            payment = EmiPayment.objects.get(order_id = data['order_id'])
+            payment = EmiPayment.objects.get(order_id = data['razorpay_order_id'])
 
             if payment.loan.borrower != request.user:
                 return Response(
