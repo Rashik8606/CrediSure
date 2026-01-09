@@ -17,8 +17,6 @@ class CreateEmiPaymentView(APIView):
         
 
     def post(self, request):
-        print("🔥 EMI PAYMENT HIT")
-        print(request.data)
         emi_id = request.data.get('emi_id')
         
         try:
