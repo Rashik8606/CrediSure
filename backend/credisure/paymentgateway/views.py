@@ -14,7 +14,6 @@ from .models import EmiSchedule, EmiPayment
 
 class CreateEmiPaymentView(APIView):
     permission_classes = [IsAuthenticated]
-        
 
     def post(self, request):
         emi_id = request.data.get('emi_id')
