@@ -17,12 +17,23 @@ class CreateEmiPaymentView(APIView):
 
     def post(self, request):
         emi_id = request.data.get('emi_id')
-
+        
         try:
             emi = EmiSchedule.objects.get(id=emi_id, paid = False)
         except EmiSchedule.DoesNotExist:
             return Response(
                 {'error':'Invalid or Already Paid EMI'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        if emi.loan.borrower != request.user:
+            return Response(
+                {'error':'Unauthrized User'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        if EmiPayment.objects.filter(emi=emi, status='success').exists():
+            return Response(
+                {'error':'EMI Already Paid'},
                 status=status.HTTP_400_BAD_REQUEST
             )
         
@@ -64,12 +75,21 @@ class VerifyEmiPaymentsView(APIView):
 
         try:
             client.utility.verify_payment_signature({
-                'razorpay_order_id':data['order_id'],
-                'razorpay_payment_is':data['payment_id'],
-                'razorpay_signature':data['signature']
+                'razorpay_order_id':data['razorpay_order_id'],
+                'razorpay_payment_id':data['razorpay_payment_id'],
+                'razorpay_signature':data['razorpay_signature']
             })
 
-            payment = EmiPayment.objects.get(order_id = data['order_id'])
+            payment = EmiPayment.objects.get(order_id = data['razorpay_order_id'])
+
+            if payment.loan.borrower != request.user:
+                return Response(
+                    {
+                        'error':'Unauthrized'
+                    },
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            
             payment.payment_id = data['payment_id']
             payment.status = 'success'
             payment.paid_at = timezone.now()
