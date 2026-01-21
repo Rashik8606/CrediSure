@@ -7,7 +7,7 @@ function Login() {
     const navigate = useNavigate();
 
     const [ role, setRole ] = useState('borrower')
-    const [ email, setEmail ] = useState('')
+    const [ username, setUserName ] = useState('')
     const [ password, setPassword ] = useState('')
     const [ secretKey, setSecretKey ] = useState('')
     const [ error, setError ] = useState('')
@@ -18,7 +18,7 @@ function Login() {
 
         try{
             const payload = {
-                email,
+                username,
                 password,
                 role
             }
@@ -54,7 +54,7 @@ function Login() {
                     <option value='admin'>Admin</option>
                 </select>
 
-                <input type="email" placeholder="ENTER EMAIL.." onChange={(e)=> setEmail(e.target.value)} required/>
+                <input type="text" placeholder="ENTER EMAIL.." onChange={(e)=> setUserName(e.target.value)} required/>
 
                 <input type="password" placeholder="ENTER PASSWORD" onChange={(e)=> setPassword(e.target.value)} required/>
 
@@ -64,6 +64,8 @@ function Login() {
 
                 <button type="submit">Login</button>
             </form>
+
+            <a href="/register">Register Page</a>
         </div>
     )
 }
