@@ -4,6 +4,7 @@ import Login from './auth/UserLogin';
 import UserRegister from './auth/UserRegister';
 import { Navigate } from 'react-router-dom';
 
+
 function App() {
   return (
     <Router>
@@ -12,6 +13,7 @@ function App() {
 
         <Route path='/login' element={< Login />}/>
         <Route path='/register' element={ < UserRegister/>}/>
+        
       </Routes>
     </Router>
   );
