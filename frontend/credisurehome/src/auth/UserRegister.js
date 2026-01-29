@@ -1,6 +1,7 @@
 import { useState } from "react";
 import API from "../api/axios";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 
 function UserRegister() {
@@ -23,17 +24,23 @@ function UserRegister() {
                 email,
                 password,
                 role,
-                phone_number : number
+                phone_number : number,
+                
             })
 
             const {access, refresh} = response.data;
 
 
-            localStorage.getItem('access_token',access)
-            localStorage.getItem('refresh_token',refresh)
+            localStorage.setItem('access_token',access)
+            localStorage.setItem('refresh_token',refresh)
 
 
-            navigate('/dash-board');
+            if (role ==='admin'){
+                navigate('/admin/dashboard')
+            }else{
+                navigate('/borrower/dashboard')
+            }
+
         }catch(err){
             setError(err.response?.data?.message || 'Register Failed !')
         }
@@ -52,14 +59,14 @@ function UserRegister() {
 
                 <input type="number" placeholder="Enter Your Number" onChange={(e)=> setNumber(e.target.value)} required/>
 
-                <section onChange={(e) => setRole(e.target.value)}>
+                <select value={role} onChange={(e) => setRole(e.target.value)}>
                     <option value='borrower'>BORROWER</option>
                     <option value='admin'>ADMIN</option>
-                </section>
+                </select>
 
                 <button type="submit">REGISTER</button>
             </form>
-            <a href="/login">Login Page</a>
+           <Link to='/login'>Login Page</Link>
         </div>
     );
 

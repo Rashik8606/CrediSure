@@ -1,6 +1,6 @@
 import { useState } from "react";
 import API from "../api/axios";
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 
 function Login() {
@@ -38,7 +38,10 @@ function Login() {
                 navigate('/borrower/dashboard')
             }
         }catch (err){
-            setError('Invalid credentials or secret key')
+            console.log(err.response?.data)
+            setError(err.response?.data.error ||
+                err.response?.data.detail||
+                'Invalid credentials or secret key')
         }
     }
 
@@ -65,9 +68,10 @@ function Login() {
                 <button type="submit">Login</button>
             </form>
 
-            <a href="/register">Register Page</a>
+            <Link to='/register'>Register Page</Link>
         </div>
     )
 }
 
 export default Login;
+
