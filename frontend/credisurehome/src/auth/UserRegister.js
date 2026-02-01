@@ -13,6 +13,8 @@ function UserRegister() {
     const [password, setPassword ] = useState('')
     const [number, setNumber ] = useState('')
     const [error, setError ] = useState('')
+    const [ secretKey, setSecretKey ] = useState('')
+
 
 
     const handleRegister = async (e) =>{
@@ -28,20 +30,24 @@ function UserRegister() {
                 
             })
 
-            const {access, refresh} = response.data;
+            if (role === 'admin'){
+                response.secretKey = secretKey
+            }
 
+            const {access, refresh, role:backendRole} = response.data
 
             localStorage.setItem('access_token',access)
             localStorage.setItem('refresh_token',refresh)
 
 
-            if (role ==='admin'){
+            if (backendRole ==='admin'){
                 navigate('/admin/dashboard')
             }else{
                 navigate('/borrower/dashboard')
             }
 
         }catch(err){
+            console.log(err.response?.data)
             setError(err.response?.data?.message || 'Register Failed !')
         }
     };
@@ -63,6 +69,10 @@ function UserRegister() {
                     <option value='borrower'>BORROWER</option>
                     <option value='admin'>ADMIN</option>
                 </select>
+
+                {role ==='admin' && (
+                    <input type="password" placeholder="ENTER SECRET KEY" onChange={(e)=>setSecretKey(e.target.value)} required></input>
+                )}
 
                 <button type="submit">REGISTER</button>
             </form>
