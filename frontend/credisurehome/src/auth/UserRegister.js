@@ -27,12 +27,10 @@ function UserRegister() {
                 password,
                 role,
                 phone_number : number,
+                secret_key : role === 'admin' ? secretKey:null,
                 
             })
 
-            if (role === 'admin'){
-                response.secretKey = secretKey
-            }
 
             const {access, refresh, role:backendRole} = response.data
 
