@@ -16,11 +16,15 @@ function Login() {
     const handleLogin = async (e) =>{
         e.preventDefault();
 
+        if (role === 'admin' && secretKey.trim()){
+            alert('Please Enter Your Secret Key ...')
+            return;
+        }
+
         try{
             const payload = {
                 username,
                 password,
-                role
             }
             if (role === 'admin'){
                 payload.secret_key = secretKey
@@ -28,11 +32,22 @@ function Login() {
 
             const res = await API.post('token/',payload)
 
+            const backendRole = res.data.role;
+
+            if(backendRole !== role){
+                alert(
+                    backendRole ==='admin'
+                    ?'You Are an admin..! Please Select Admin and enter your secret key '
+                    :'You Are a Borrower..! Please Select Borrower. You Can not Vist Admin page'
+                )
+                return
+            }
+
             localStorage.setItem('access_token', res.data.access);
             localStorage.setItem('refresh_token',res.data.refresh);
-            localStorage.setItem('role',res.data.role)
+            localStorage.setItem('role',backendRole)
 
-            if (res.data.role === 'admin'){
+            if ( backendRole === 'admin'){
                 navigate('/admin/dashboard');
             }else{
                 navigate('/borrower/dashboard')

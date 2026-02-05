@@ -25,9 +25,8 @@ function UserRegister() {
                 username,
                 email,
                 password,
-                role,
                 phone_number : number,
-                secret_key : role === 'admin' ? secretKey:null,
+                secret_key : role === 'admin' ? secretKey:'',
                 
             })
 
@@ -46,7 +45,8 @@ function UserRegister() {
 
         }catch(err){
             console.log(err.response?.data)
-            setError(err.response?.data?.message || 'Register Failed !')
+            setError(err.response?.data?.message ||
+                JSON.stringify(err.response?.data) || 'Register Failed !')
         }
     };
     return (
