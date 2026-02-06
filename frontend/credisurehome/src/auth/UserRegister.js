@@ -2,7 +2,7 @@ import { useState } from "react";
 import API from "../api/axios";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-
+import '../css/login.css'
 
 function UserRegister() {
     const navigate = useNavigate()
@@ -50,31 +50,44 @@ function UserRegister() {
         }
     };
     return (
-        <div>
-            <form onSubmit={handleRegister}>
-                <h2>User Register</h2>
+        <div className="login-container">
+            <form className="login-card" onSubmit={handleRegister}>
+                <h2>User Register Portal</h2>
+                
                 {error && <p style={{color:'red'}}>{error}</p>}
 
-                <input type="text" placeholder="User Name" onChange={(e) => setUserName(e.target.value)} required/>
+                <label className="label">Enter Your Name</label>
+                <input className="input" type="text" placeholder="User Name" onChange={(e) => setUserName(e.target.value)} required/>
 
-                <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} required/>
+                <label className="label">Email</label>
+                <input className="input" type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} required/>
 
-                <input type="password" placeholder="Enter Password" onChange={(e) => setPassword(e.target.value)} required/>
+                <label className="label">Password</label>
+                <input className="input" type="password" placeholder="Enter Password" onChange={(e) => setPassword(e.target.value)} required/>
 
-                <input type="number" placeholder="Enter Your Number" onChange={(e)=> setNumber(e.target.value)} required/>
+                <label className="label">Phone Number</label>
+                <input className="input" type="number" placeholder="Enter Your Number" onChange={(e)=> setNumber(e.target.value)} required/>
 
-                <select value={role} onChange={(e) => setRole(e.target.value)}>
+                <label className="label"></label>
+                <select className="input" value={role} onChange={(e) => setRole(e.target.value)}>
                     <option value='borrower'>BORROWER</option>
                     <option value='admin'>ADMIN</option>
                 </select>
 
                 {role ==='admin' && (
-                    <input type="password" placeholder="ENTER SECRET KEY" onChange={(e)=>setSecretKey(e.target.value)} required></input>
+                    <>
+                    <label className="label">Secret Key</label>
+                    <input className="input" type="password" placeholder="ENTER SECRET KEY" onChange={(e)=>setSecretKey(e.target.value)} required></input>
+                    </>
+                    
                 )}
 
-                <button type="submit">REGISTER</button>
+                <button className="login-btn" type="submit">REGISTER</button>
+                <p className="register-link">You Have an Account<br/>
+                    <Link to='/login'>Login Here !</Link>
+                </p>
             </form>
-           <Link to='/login'>Login Page</Link>
+          
         </div>
     );
 

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import API from "../api/axios";
 import { Link, useNavigate } from 'react-router-dom'
+import '../css/login.css'
+
 
 
 function Login() {
@@ -16,7 +18,7 @@ function Login() {
     const handleLogin = async (e) =>{
         e.preventDefault();
 
-        if (role === 'admin' && secretKey.trim()){
+        if (role === 'admin' && !secretKey.trim()){
             alert('Please Enter Your Secret Key ...')
             return;
         }
@@ -61,29 +63,39 @@ function Login() {
     }
 
     return (
-        <div>
-            <form onSubmit={handleLogin}>
-                <h2>Login Page</h2>
-                {error && <p style={{color:'red'}}>{error}</p>}
+        <div className="login-container">
+            <form className="login-card" onSubmit={handleLogin}>
+                <h2>Loan Management Portal</h2>
+                <p className="subtitle">Secure access to your financial journey</p>
+                {error && <div className="error">{error}</div>}
+                <label className="label">Login As</label>
                 {/* ROLE SELECT */}
 
-                <select value={role} onChange={(e)=> setRole(e.target.value)}>
+                <select className="input" value={role} onChange={(e)=> setRole(e.target.value)}>
                     <option value='borrower'>Borrower</option>
-                    <option value='admin'>Admin</option>
+                    <option value='admin'>Administrator</option>
                 </select>
 
-                <input type="text" placeholder="ENTER EMAIL.." onChange={(e)=> setUserName(e.target.value)} required/>
+                 <label className="label">Email / Username</label>
+                <input className="input" type="text" placeholder="ENTER USERNAME.." onChange={(e)=> setUserName(e.target.value)} required/>
 
-                <input type="password" placeholder="ENTER PASSWORD" onChange={(e)=> setPassword(e.target.value)} required/>
+                 <label className="label">PASSWORD</label>
+                <input className="input" type="password" placeholder="ENTER PASSWORD" onChange={(e)=> setPassword(e.target.value)} required/>
 
                 {role === 'admin' && (
-                    <input type="password" placeholder="ENTER SECRECT KEY" onChange={(e)=> setSecretKey(e.target.value)} required/>
+                    <>
+                    <label className="label">Admin Secret Key</label>
+                    <input className="input" type="password" placeholder="ENTER SECRECT KEY" onChange={(e)=> setSecretKey(e.target.value)} required/>
+                 </>
                 )}
+               
 
-                <button type="submit">Login</button>
+                <button className="login-btn" type="submit">Access Dashboard</button>
+
+                <p className="register-link">Don't have an account ?
+                    <Link to='/register'>Register</Link>
+                </p>
             </form>
-
-            <Link to='/register'>Register Page</Link>
         </div>
     )
 }

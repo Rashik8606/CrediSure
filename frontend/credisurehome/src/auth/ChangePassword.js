@@ -19,7 +19,7 @@ const ChangePassword = () => {
         setError('')
 
         try{
-            const response = await API.put('/change-password',{
+            const response = await API.put('/change-password/',{
                 old_password:oldPassword,
                 new_password:newPassword,
                 confirm_password:confirmPassword
@@ -49,7 +49,12 @@ const ChangePassword = () => {
             <Link to='/borrower/dashboard'>BACK TO PAGE</Link>
         )}
         <h1>PASSWORD CHANGING PAGE</h1>
-        <form></form>
+        <form onSubmit={handleChangePassword}>
+            <input type='password' placeholder='PLEASE ENTER YOU OLD PASSWORD' onChange={(e)=>setOldPassword(e.target.value)} required/>
+            <input type='password' placeholder='PLEASE ENTER YOUR NEW PASSWORD' onChange={(e)=>setNewPassword(e.target.value)} required/>
+            <input type='password' placeholder='CONFIRM YOUR NEW PASSWORD' onChange={(e)=>confirmSetPassword(e.target.value) } required/>
+            <button type='submit'>Change</button>
+        </form>
     </div>
   )
 }

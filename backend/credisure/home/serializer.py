@@ -26,20 +26,20 @@ class MyTokensObtainPairSerializer(TokenObtainPairSerializer):
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
-    admin_code = serializers.CharField(write_only = True, required = False, allow_blank = True)
+    secret_key  = serializers.CharField(write_only = True, required = False, allow_blank = True)
     role = serializers.CharField(write_only = True, required = False, allow_blank = True)
 
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'admin_code', 'role']
+        fields = ['username', 'email', 'password', 'secret_key', 'role']
         extra_kwargs = {'password':{'write_only':True}}
 
     def create(self, validated_data):
-        admin_code = validated_data.pop('admin_code', None)
+        secret_key  = validated_data.pop('secret_key', None)
 
         # Determine role
-        if admin_code and admin_code == getattr(settings, 'ADMIN_SECRET_KEY', None):
+        if secret_key  and secret_key  == getattr(settings, 'ADMIN_SECRET_KEY', None):
             role = 'admin'
         else:
             role = 'borrower'
