@@ -1,0 +1,43 @@
+.admin-container {
+    padding: 30px;
+    color: #fff;
+}
+
+.loan-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(0,0,0,0.6);
+}
+
+.loan-table th, .loan-table td {
+    padding: 12px;
+    border-bottom: 1px solid #333;
+    text-align: center;
+}
+
+.pending {
+    color: orange;
+}
+
+.approved {
+    color: #00ff9c;
+}
+
+.rejected {
+    color: #ff4c4c;
+}
+
+.approve {
+    background: #00ff9c;
+    border: none;
+    padding: 6px 10px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.reject {
+    background: #ff4c4c;
+    border: none;
+    padding: 6px 10px;
+    cursor: pointer;
+}
