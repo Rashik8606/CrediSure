@@ -46,23 +46,22 @@ const AdminPage = () => {
           {loans.map((loan)=>(
             <tr key={loan.id}>
               <td>{loan.borrower_username}</td>
-              <td> $ {loan.amount}</td>
-              <td className={loan.status}>{loan.status}</td>
+              <td>${loan.amount}</td>
+              <td className={`status ${loan.status}`}>{loan.status}</td>
+              <td>{loan.kyc_status}</td>
 
               <td>
-                {loan.kyc_verified ? '✔ Verified' : "❌ Pending"}
-              </td>
-
-              <td>
-                {loan.status?.toLowerCase() === 'pending' && (
+                {loan.status === 'pending' && loan.kyc_status === 'verified' && (
                   <>
-                  <button className='approve' onClick={()=>approveLoans(loan.id)}>Approve</button>
-                  <button className='reject' onClick={()=>rejectLoans(loan.id)}>Reject</button>
+                    <button className="approve" onClick={() => approveLoans(loan.id)}>
+                      Approve
+                    </button>
+                    <button className="reject" onClick={() => rejectLoans(loan.id)}>
+                      Reject
+                    </button>
                   </>
                 )}
-                
               </td>
-
             </tr>
           ))}
         </tbody>

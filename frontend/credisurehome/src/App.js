@@ -6,6 +6,7 @@ import { Navigate } from 'react-router-dom';
 import AdminPage from './pages/AdminPage';
 import BorrowerPage from './pages/BorrowerPage';
 import ChangePassword from './auth/ChangePassword';
+import LoanRequestForm from './pages/LoanRequestForm';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         <Route path='/admin/dashboard' element={<AdminPage />}/>
         <Route path='/borrower/dashboard' element={< BorrowerPage/>}/>
         <Route path='/change-password' element={< ChangePassword/>}/>
+        <Route path='/loan-request-form' element={< LoanRequestForm/>}/>
         
       </Routes>
     </Router>
