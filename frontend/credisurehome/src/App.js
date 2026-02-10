@@ -7,6 +7,7 @@ import AdminPage from './pages/AdminPage';
 import BorrowerPage from './pages/BorrowerPage';
 import ChangePassword from './auth/ChangePassword';
 import LoanRequestForm from './pages/LoanRequestForm';
+import KycVerification from './pages/KycVerification';
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
         <Route path='/borrower/dashboard' element={< BorrowerPage/>}/>
         <Route path='/change-password' element={< ChangePassword/>}/>
         <Route path='/loan-request-form' element={< LoanRequestForm/>}/>
+        <Route path='/kyc-verification' element={< KycVerification/>}/>
         
       </Routes>
     </Router>
