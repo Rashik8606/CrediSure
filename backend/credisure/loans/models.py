@@ -38,7 +38,7 @@ class loanRequestForm(models.Model):
     pan_card = models.ImageField(upload_to='kyc/pan_card/', blank=True, null=True)
     selfie = models.ImageField(upload_to='kyc/selfie/', blank=True, null=True)
     kyc_status = models.CharField(max_length=20,
-                                  choices=[('Not Uploaded','Not Uploaded'), ('Under Review','Under Review'),('verified','verified')], default='Not Uploaded')
+                                  choices=[('NOT_UPLOAD','Not Uploaded'), ('UNDER_REVIEW','Under Review'),('VERIFIED','verified')], default='NOT_UPLOAD')
 
     def __str__(self):
         return f'{self.borrower.username} - {self.amount}'

@@ -11,6 +11,7 @@ from django.core.mail import EmailMultiAlternatives
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from django.utils import timezone
+from rest_framework.parsers import MultiPartParser,FormParser
 
 
 
@@ -114,6 +115,7 @@ class LoanAdminListView(generics.ListAPIView):
 
 class LoanKycUploadView(APIView):
     permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
 
     def post(self, request, loan_id):
         try:
@@ -123,7 +125,7 @@ class LoanKycUploadView(APIView):
         
         serializer = loanSerializer(loan, data = request.data, partial = True)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(kyc_status='UNDER_REVIEW')
 
             User = get_user_model()
             admins = User.objects.filter(role = 'admin')
@@ -158,10 +160,13 @@ class LoanKycUploadView(APIView):
                 email.attach_file(loan.aadhaar_back.path)
             if loan.pan_card:
                 email.attach_file(loan.pan_card.path)
+            if loan.selfie:
+                email.attach_file(loan.selfie.path)
 
             email.send(fail_silently = False)
 
-            return Response({'message':'KYC Upload Successfully completed..'}, status=status.HTTP_202_ACCEPTED)
+            return Response({'message':'KYC Upload Successfully completed..',
+                             'loan':loanSerializer(loan).data}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
