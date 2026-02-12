@@ -7,6 +7,7 @@ const LoanRequestForm = () => {
 
     const [amount, setAmount] = useState('')
     const [purpose, setPurpose] = useState('')
+    const [email, setEmail] = useState('')
     const [duration, setDuration] = useState('')
     const [error, setError] = useState('')
 
@@ -18,6 +19,7 @@ const LoanRequestForm = () => {
         const res =  await API.post('/loans/',{
             amount : Number(amount),  //if not here Number Default str but Number key word helps Change to Integer 
             purpose,
+            email,
             duration_months:Number(duration)
         })
 
@@ -43,6 +45,7 @@ const LoanRequestForm = () => {
 
         <input placeholder='AMOUNT' onChange={(e)=> setAmount(e.target.value)}/>
         <input placeholder='PURPOSE' onChange={(e)=> setPurpose(e.target.value)}/>
+        <input placeholder='EMAIL' onChange={(e) => setEmail(e.target.value)}/>
         <input placeholder='DURATION' onChange={(e)=>setDuration(e.target.value)}/>
         <button type='submit'>GO TO KYC</button>
       </form>
