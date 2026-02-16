@@ -85,25 +85,9 @@ class LoanAdminManageView(generics.RetrieveUpdateAPIView):
 
 
     def perform_update(self, serializer):
+        print("PERFORM UPDATE CALLED")
         loan = serializer.save() #update the loan
-        print("Loan updated:", loan)
-
-        subject = f"Your Loan Request has been {loan.status.capitalize()}"
-        message = f"""
-        <html>
-        <body style="font-family:Arial,sans-serif; background-color:#f9f9f9; padding:20px;">
-            <div style="background-color:#ffffff; border-radius:8px; padding:20px; max-width:600px; margin:auto; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
-                <h2 style="color:#007bff;">Loan Update - Credisure</h2>
-                <p>Hi <b>{loan.borrower.username}</b>,</p>
-                <p>Your loan request of <b>₹{loan.amount}</b> has been <b>{loan.status.upper()}</b>.</p>
-                <p>Thank you for choosing <b>Credisure</b> — we appreciate your trust in us.</p>
-                <br>
-                <p style="font-size:14px; color:#555;">Best regards,<br><b>Rashik</b><br>CEO, Credisure</p>
-            </div>
-        </body>
-        </html>
-        """
-        send_email(subject, message, [loan.borrower.email],html=True)
+ 
 
 
 # Loans list view Admin
