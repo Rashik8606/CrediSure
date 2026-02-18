@@ -2,7 +2,7 @@ from django.shortcuts import render
 from .models import loanRequestForm,EmiSchedule
 from .serializer import loanSerializer,EmiScheduleSerializer
 from rest_framework import generics, permissions, status
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission,IsAuthenticated
 from .utils import send_email
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -12,6 +12,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from django.utils import timezone
 from rest_framework.parsers import MultiPartParser,FormParser
+from rest_framework.exceptions import ValidationError
 
 
 
@@ -39,6 +40,12 @@ class LoanCreateListView(generics.ListCreateAPIView):
         return loanRequestForm.objects.filter(borrower=self.request.user)
     
     def create(self, request, *args, **kwargs):
+        existing_loan = loanRequestForm.objects.filter(
+            borrower = request.user,
+            status__in = ['pending','approved']
+        ).exists()
+        if existing_loan:
+            raise ValidationError({'detail':'You have already a loan under process'})
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         loan = serializer.save(borrower=self.request.user)
@@ -68,6 +75,24 @@ class LoanCreateListView(generics.ListCreateAPIView):
         # send_email(subject, message, admin_emails, html=True)
 
         return Response({'id': loan.id}, status=status.HTTP_201_CREATED)
+    
+class LoanActiveLoan(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        loan = loanRequestForm.objects.filter(
+            borrower = request.user,
+            status__in = ['pending','under_process']
+
+        ).first()
+
+        if not loan:
+            return Response({
+                'has_active_loan':True,
+                'status':loan.status,
+                'amount':loan.amount
+            })
+        return Response({'has_active_loan':False})
 
 
 # This custom Admin auth
