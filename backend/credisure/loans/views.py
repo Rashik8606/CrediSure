@@ -42,7 +42,7 @@ class LoanCreateListView(generics.ListCreateAPIView):
     def create(self, request, *args, **kwargs):
         existing_loan = loanRequestForm.objects.filter(
             borrower = request.user,
-            status__in = ['pending','approved']
+            status__in = ['pending','approved','under_process']
         ).exists()
         if existing_loan:
             raise ValidationError({'detail':'You have already a loan under process'})
@@ -82,11 +82,11 @@ class LoanActiveLoan(APIView):
     def get(self, request):
         loan = loanRequestForm.objects.filter(
             borrower = request.user,
-            status__in = ['pending','under_process']
+            status__in = ['pending','under_process','approved']
 
         ).first()
 
-        if not loan:
+        if loan:
             return Response({
                 'has_active_loan':True,
                 'status':loan.status,
@@ -110,8 +110,7 @@ class LoanAdminManageView(generics.RetrieveUpdateAPIView):
 
 
     def perform_update(self, serializer):
-        print("PERFORM UPDATE CALLED")
-        loan = serializer.save() #update the loan
+        serializer.save()
  
 
 
@@ -187,9 +186,15 @@ class LoanViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def approve(self, request, pk=None):
         loan = self.get_object()
+
+        if loan.kyc_status != 'UNDER_REVIEW':
+            return Response(
+                {'error':'KYC must be submitted before approval'},status=400
+            )
         loan.status = 'approved'
-        loan.save()
-        return Response({'status':'approved'})
+        loan.kyc_status = 'APPROVED'
+        loan.save(update_fields=['status','kyc_status'])
+        return Response({'status':'approved','kyc_status':'APPROVED'})
     
     @action(detail=True, methods=['get'])
     def emis(self, request, pk=None):
