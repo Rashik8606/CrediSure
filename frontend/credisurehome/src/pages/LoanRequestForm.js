@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import API from '../api/axios';
 
@@ -10,10 +10,30 @@ const LoanRequestForm = () => {
     const [email, setEmail] = useState('')
     const [duration, setDuration] = useState('')
     const [error, setError] = useState('')
+    const [loading, setLoading] = useState(true)
+
+    useEffect(()=>{
+      API.get('/loans/borrower/active_loan/')
+      .then(res =>{
+        if(res.data.has_active_loan){
+          navigate('/borrower/dashboard')
+        }else{
+          setLoading(false)
+        }
+      })
+      .catch(err => {
+        if (err.response.status === 401){
+          navigate('/unauthorized')
+        }else{
+          setLoading(false)
+        }
+      })
+    },[navigate])
 
 
     const submitloan = async (e)=>{
-        e.preventDefault();
+      
+      e.preventDefault();
 
         try{
         const res =  await API.post('/loans/',{
@@ -32,7 +52,7 @@ const LoanRequestForm = () => {
         })
     }catch(err){
       console.log(err.response || err)
-      setError(err.response?.data?.message ||'Failed to submit loan application')
+      setError(err.response?.data?.detail ||'Failed to submit loan application')
     }
     }
 
@@ -49,7 +69,7 @@ const LoanRequestForm = () => {
         <input placeholder='DURATION' onChange={(e)=>setDuration(e.target.value)}/>
         <button type='submit'>GO TO KYC</button>
       </form>
-      <Link to='/'>BACK</Link>
+      <Link to='/borrower/dashboard'>BACK</Link>
     </div>
   )
 }

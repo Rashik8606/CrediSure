@@ -51,7 +51,7 @@ const AdminPage = () => {
               <td>{loan.kyc_status}</td>
 
               <td>
-                {loan.kyc_status === 'UNDER_REVIEW' && loan.status === 'pending' && (
+                {loan.kyc_status === 'UNDER_REVIEW' && loan.status !== 'approved' && (
                   <>
                     <button className="approve" onClick={() => approveLoans(loan.id)}>
                       Approve

@@ -8,6 +8,8 @@ import BorrowerPage from './pages/BorrowerPage';
 import ChangePassword from './auth/ChangePassword';
 import LoanRequestForm from './pages/LoanRequestForm';
 import KycVerification from './pages/KycVerification';
+import PrivateRoute from './route/PrivateRoute';
+import UnAuthrized from './pages/UnAuthrized';
 
 
 function App() {
@@ -18,11 +20,14 @@ function App() {
 
         <Route path='/login' element={< Login />}/>
         <Route path='/register' element={ < UserRegister/>}/>
-        <Route path='/admin/dashboard' element={<AdminPage />}/>
-        <Route path='/borrower/dashboard' element={< BorrowerPage/>}/>
+        <Route path='/borrower/dashboard' element={<PrivateRoute><BorrowerPage/></PrivateRoute>}/>
+        <Route path="/unauthorized" element={<UnAuthrized />} />
+        <Route path='/admin/dashboard' element={<PrivateRoute><AdminPage/></PrivateRoute>}/>
         <Route path='/change-password' element={< ChangePassword/>}/>
-        <Route path='/loan-request-form' element={< LoanRequestForm/>}/>
+        <Route path='/loan-request-form' element={<PrivateRoute><LoanRequestForm/></PrivateRoute>}/>
         <Route path='/kyc-verification' element={< KycVerification/>}/>
+
+        
         
       </Routes>
     </Router>
