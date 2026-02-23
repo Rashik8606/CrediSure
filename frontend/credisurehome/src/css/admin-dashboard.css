@@ -1,43 +1,147 @@
-.admin-container {
-    padding: 30px;
-    color: #fff;
+/* ===== TABLE ===== */
+
+.admin-page {
+  padding: 70px;
 }
 
+/* ===== DESKTOP TABLE ===== */
+/* Table wrapper */
+.table-wrapper {
+  max-width: 1100px;
+  margin: 30px auto;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+
+/* Table */
 .loan-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: rgba(0,0,0,0.6);
+  width: 100%;
+  border-collapse: collapse;
+  background: transparent;
 }
 
-.loan-table th, .loan-table td {
-    padding: 12px;
-    border-bottom: 1px solid #333;
-    text-align: center;
+/* Header */
+.loan-table th {
+  text-align: left;
+  padding: 14px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #94a3b8;
+  border-bottom: 1px solid #1e293b;
 }
 
-.pending {
-    color: orange;
+/* Body cells */
+.loan-table td {
+  padding: 14px;
+  border-bottom: 1px solid #1e293b;
+  font-size: 14px;
+  color: #000000;
 }
 
-.approved {
-    color: #00ff9c;
+/* Row hover */
+.loan-table tbody tr:hover {
+  background: rgba(148, 163, 184, 0.06);
 }
 
-.rejected {
-    color: #ff4c4c;
+
+.loan-table td:nth-child(3),
+.loan-table td:nth-child(4),
+.loan-table th:nth-child(3),
+.loan-table th:nth-child(4) {
+  text-align: center;
 }
 
-.approve {
-    background: #00ff9c;
-    border: none;
-    padding: 6px 10px;
-    margin-right: 5px;
-    cursor: pointer;
+/* ===== MOBILE CARDS ===== */
+.table-mobile {
+  display: none;
 }
 
-.reject {
-    background: #ff4c4c;
-    border: none;
-    padding: 6px 10px;
-    cursor: pointer;
+.loan-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+  font-size: 14px;
+}
+
+.loan-card div {
+  margin-bottom: 6px;
+}
+
+.card-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* ===== BADGES ===== */
+.badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.badge.approved { background: #dcfce7; color: #166534; }
+.badge.pending { background: #fef9c3; color: #854d0e; }
+.badge.rejected { background: #fee2e2; color: #991b1b; }
+
+/* ===== MOBILE SWITCH ===== */
+@media (max-width: 768px) {
+  .table-desktop {
+    display: none;
+  }
+
+  .table-mobile {
+    display: block;
+  }
+
+  .analysis-dashboard {
+    flex-direction: column;
+    gap: 24px;
+  }
+}
+
+
+/* Approve and reject button ------> */
+
+/* Action buttons */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+button.approve,
+button.reject {
+  border: none;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+button.approve {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+
+button.approve:hover {
+  background: #22c55e;
+  color: #fff;
+}
+
+button.reject {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+button.reject:hover {
+  background: #ef4444;
+  color: #fff;
 }

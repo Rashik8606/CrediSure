@@ -1,0 +1,53 @@
+/* ===== ANALYSIS DASHBOARD ===== */
+
+.analysis-dashboard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 48px;
+  padding: 40px 20px;
+  flex-wrap: wrap;
+}
+
+/* Gauge wrapper */
+.gauge-wrapper {
+  width: 200px;
+  text-align: center;
+}
+
+/* SVG */
+.gauge {
+  width: 100%;
+  height: auto;
+}
+
+/* Background arc */
+.gauge-bg {
+  fill: none;
+  stroke: #e5e7eb;
+  stroke-width: 8;
+}
+
+/* Progress arc */
+.gauge-fill {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dasharray 1s ease;
+}
+
+/* Value text */
+.gauge-value {
+  font-size: 32px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Label text */
+.gauge-label {
+  font-size: 14px;
+  color: #6b7280;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
