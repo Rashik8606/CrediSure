@@ -14,13 +14,26 @@ const AdminPage = () => {
   const pending = loans.filter(l => l.status === 'pending' || l.status === 'UNDER_REVIEW').length
   const rejected = loans.filter(l => l.status === 'rejected').length
 
+
+  // Pagination stat
+  const [currentPage, setCurrentPage] = useState(1)
+  const rowsPerPage = 10
+  // calculate index
+  const indexOfLastRow = currentPage * rowsPerPage
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage
+  // slices Data
+  const currentLoan = loans.slice(indexOfFirstRow, indexOfLastRow)
+  // total pages
+  const totalPage = Math.ceil(loans.length / rowsPerPage)
+
+
   useEffect(()=>{
     loadLoans();
   },[]);
 
   const loadLoans = async ()=>{
     const res = await API.get('/loans/admin/all/');
-    setLoan(res.data)
+    setLoan(res.data.reverse())
   }
 
   const approveLoans = async (loanId)=>{
@@ -65,7 +78,7 @@ const AdminPage = () => {
             </tr>
           </thead>
           <tbody>
-            {loans.map((loan) => (
+            {currentLoan.map((loan) => (
               <tr key={loan.id}>
                 <td>{loan.borrower_username}</td>
                 <td>₹{loan.amount}</td>
@@ -94,7 +107,8 @@ const AdminPage = () => {
       </div>
     </div>
 
-            {/* Mobile response---------> */}
+
+    {/* Mobile response---------> */}
     <div className="table-mobile">
       {loans.map((loan) => (
         <div className="loan-card" key={loan.id}>
@@ -105,14 +119,21 @@ const AdminPage = () => {
 
           {loan.kyc_status === 'UNDER_REVIEW' && (
             <div className="card-actions">
-              <button type="button" class="btn btn-outline-success">Success</button>
+              <button type="button" className="approve">Success</button>
               <button className="reject">Reject</button>
             </div>
           )}
         </div>
       ))}
     </div>
+      <div className='pagination'>
+        <button disabled={currentPage === 1} onClick={()=>setCurrentPage(prev => prev -1)}>pre</button>
+        {[...Array(totalPage)].map((_,index)=>(
+          <button key={index} className={currentPage=== index +1 ? 'active' : ''} onClick={()=> setCurrentPage(index+1)}>{index+1}</button>
+        ))}
 
+        <button disabled={currentPage === totalPage} onClick={()=>setCurrentPage(prev => prev +1 )}>Next</button>
+      </div>
       <a href='/change-password'>CHANGE PASSWORD</a>
   
     <PageFooter/>
