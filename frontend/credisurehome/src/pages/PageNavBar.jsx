@@ -16,7 +16,7 @@ const PageNavBar = () => {
     <div>
 
     <link href="https://cdn.ux4g.gov.in/UX4G@2.0.8/css/ux4g-min.css" rel="stylesheet"></link>
-    <nav className="navbar navbar-expand-lg bg-light fixed-top shadow-sm">
+    <nav className="navbar navbar-expand-lg bg-black fixed-top shadow-sm">
       
       <div className="container-fluid">
 

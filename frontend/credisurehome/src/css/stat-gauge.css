@@ -1,53 +1,89 @@
-/* ===== ANALYSIS DASHBOARD ===== */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap');
 
-.analysis-dashboard {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 48px;
-  padding: 40px 20px;
-  flex-wrap: wrap;
-}
-
-/* Gauge wrapper */
+/* ===== GAUGE CARD ===== */
 .gauge-wrapper {
-  width: 200px;
-  text-align: center;
+  position: relative;
+  background: #111827;
+  border: 1px solid #1e2d40;
+  border-radius: 20px;
+  padding: 24px 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+  overflow: hidden;
+  min-height: 160px;
 }
 
-/* SVG */
+.gauge-wrapper:hover {
+  border-color: #2a3f58;
+  transform: translateY(-4px);
+}
+
+/* top shimmer line */
+.gauge-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 15%; right: 15%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(56,189,248,0.25), transparent);
+}
+
+/* ===== SVG ===== */
 .gauge {
   width: 100%;
-  height: auto;
+  max-width: 180px;
+  display: block;
+  /* viewBox="0 0 100 60"  — arc from M5,55 A45,45 0 0 1 95,55 */
+  /* actual half-circle arc length = π × 45 ≈ 141.4 */
 }
 
 /* Background arc */
 .gauge-bg {
   fill: none;
-  stroke: #e5e7eb;
-  stroke-width: 8;
+  stroke: #1e2d40;
+  stroke-width: 9;
+  stroke-linecap: round;
 }
 
-/* Progress arc */
+/* Coloured progress arc */
 .gauge-fill {
   fill: none;
-  stroke-width: 8;
+  stroke-width: 9;
   stroke-linecap: round;
-  transition: stroke-dasharray 1s ease;
+  /* dasharray is set inline by the component; total arc ≈ 141 */
+  stroke-dashoffset: 0;
+  transition: stroke-dasharray 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 0 5px currentColor);
 }
 
-/* Value text */
+/* ===== TEXT ===== */
+.gauge-content {
+  position: absolute;
+  /* sit near the bottom of the arc opening */
+  bottom: 20px;
+  left: 0; right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  pointer-events: none;
+}
+
 .gauge-value {
-  font-size: 32px;
-  font-weight: 600;
-  color: #111827;
+  font-family: 'Syne', sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  color: #e2e8f0;
+  letter-spacing: -1.5px;
+  line-height: 1;
 }
 
-/* Label text */
 .gauge-label {
-  font-size: 14px;
-  color: #6b7280;
-  letter-spacing: 0.5px;
+  font-family: 'Syne', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
   text-transform: uppercase;
-  margin-top: 4px;
+  letter-spacing: 0.14em;
+  color: #64748b;
 }

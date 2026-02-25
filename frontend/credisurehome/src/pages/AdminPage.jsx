@@ -43,7 +43,7 @@ const AdminPage = () => {
   }
 
   const rejectLoans = async (loanId) =>{
-    await API.post(`/loans/admin/${loanId}/`,{
+    await API.post(`/loans/admin/${loanId}/reject/`,{
       status:'rejected'
     })
     alert('Loan Rejected')
@@ -56,6 +56,13 @@ const AdminPage = () => {
 
     <div className='admin-page'>
 
+      <div className='admin-header'>
+        <div>
+          <h1 className='admin-title'>Admin <span>Panel</span></h1>
+          <p className='admin-sub'>{total} total applications</p>
+        </div>
+      </div>
+
       <div className='analysis-dashboard' >
         <StatGauge label='Approved' value={approved} color='#22c55e'/>
         <StatGauge label='Pending' value={pending} color='#facc15'/>
@@ -66,6 +73,10 @@ const AdminPage = () => {
     {/* Desktop Response -----> */}
     </div>
       <div className='table-desktop'>
+        <div className='table-toolbar'>
+          <span className='table-title'>All Applications</span>
+          <span className='table-count'>Page {currentPage} / {totalPage || 1}</span>
+        </div>
         <div className='table-wrapper'>
         <table className="loan-table">
           <thead>
@@ -81,7 +92,7 @@ const AdminPage = () => {
             {currentLoan.map((loan) => (
               <tr key={loan.id}>
                 <td>{loan.borrower_username}</td>
-                <td>₹{loan.amount}</td>
+                <td>₹{Number(loan.amount).toLocaleString('en-IN')}</td>
                 <td><span className={`badge ${loan.status}`}>{loan.status}</span></td>
                 <td >
                   <span className={`badge kyc ${loan.kyc_status.toLowerCase()}`}>{loan.kyc_status}</span>
@@ -113,28 +124,28 @@ const AdminPage = () => {
       {loans.map((loan) => (
         <div className="loan-card" key={loan.id}>
           <div><strong>User:</strong> {loan.borrower_username}</div>
-          <div><strong>Amount:</strong> ₹{loan.amount}</div>
+          <div><strong>Amount:</strong> ₹{Number(loan.amount).toLocaleString('en-IN')}</div>
           <div><strong>Status:</strong> <span className={`badge ${loan.status}`}>{loan.status}</span></div>
           <div><strong>KYC:</strong> <span className={`badge kyc ${loan.kyc_status.toLowerCase()}`}>{loan.kyc_status}</span></div>
 
           {loan.kyc_status === 'UNDER_REVIEW' && (
             <div className="card-actions">
-              <button type="button" className="approve">Success</button>
-              <button className="reject">Reject</button>
+              <button type="button" className="approve" onClick={() => approveLoans(loan.id)}>Approve</button>
+              <button className="reject" onClick={() => rejectLoans(loan.id)}>Reject</button>
             </div>
           )}
         </div>
       ))}
     </div>
       <div className='pagination'>
-        <button disabled={currentPage === 1} onClick={()=>setCurrentPage(prev => prev -1)}>pre</button>
+        <button disabled={currentPage === 1} onClick={()=>setCurrentPage(prev => prev -1)}>← Prev</button>
         {[...Array(totalPage)].map((_,index)=>(
           <button key={index} className={currentPage=== index +1 ? 'active' : ''} onClick={()=> setCurrentPage(index+1)}>{index+1}</button>
         ))}
 
-        <button disabled={currentPage === totalPage} onClick={()=>setCurrentPage(prev => prev +1 )}>Next</button>
+        <button disabled={currentPage === totalPage} onClick={()=>setCurrentPage(prev => prev +1 )}>Next →</button>
       </div>
-      <a href='/change-password'>CHANGE PASSWORD</a>
+      <a href='/change-password'>⬡ Change Password</a>
   
     <PageFooter/>
     </>
