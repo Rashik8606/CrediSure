@@ -81,18 +81,25 @@ class LoanActiveLoan(APIView):
 
     def get(self, request):
         loan = loanRequestForm.objects.filter(
-            borrower = request.user,
-            status__in = ['pending','under_process','approved']
+            borrower = request.user
+        ).exclude(status = 'completed').order_by('-id').first()
 
-        ).first()
+        if not loan:
+            return Response({'has_active_loan':False})
 
-        if loan:
+        if loan.status == 'approved':
             return Response({
                 'has_active_loan':True,
+                'approved_loan':True,
                 'status':loan.status,
                 'amount':loan.amount
             })
-        return Response({'has_active_loan':False})
+        return Response({
+            'has_active_loan':True,
+            'approved_loan':False,
+            'status':loan.status,
+            'amount':loan.amount
+        })
 
 
 # This custom Admin auth
@@ -195,6 +202,14 @@ class LoanViewSet(viewsets.ModelViewSet):
         loan.kyc_status = 'APPROVED'
         loan.save(update_fields=['status','kyc_status'])
         return Response({'status':'approved','kyc_status':'APPROVED'})
+
+    @action(detail=True, method=['post'])
+    def reject(self, request, pk=None):
+        loan = self.get_object()
+        loan.status = 'rejected'
+        loan.kyc_status = 'REJECTED'
+        loan.save(update_fields = ['status','kyc_status'])
+        return Response({'status':'rejected','kyc_status':'REJECTED'})
     
     @action(detail=True, methods=['get'])
     def emis(self, request, pk=None):
