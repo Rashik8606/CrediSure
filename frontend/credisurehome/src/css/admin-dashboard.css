@@ -34,7 +34,7 @@
 ══════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; }
 
-body {
+.all-page {
   background: var(--bg-base) !important;
   color: var(--text-primary);
   margin: 0; padding: 0;

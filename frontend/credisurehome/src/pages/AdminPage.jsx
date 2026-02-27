@@ -14,7 +14,10 @@ const AdminPage = () => {
   const pending = loans.filter(l => l.status === 'pending' || l.status === 'UNDER_REVIEW').length
   const rejected = loans.filter(l => l.status === 'rejected').length
 
+  //search filter
+  const [searchTerm, setSearchTerm] = useState('')
 
+  const filteredLoan = loans.filter(loan => loan.borrower_username.toLowerCase().includes(searchTerm.toLowerCase()))
   // Pagination stat
   const [currentPage, setCurrentPage] = useState(1)
   const rowsPerPage = 10
@@ -22,9 +25,9 @@ const AdminPage = () => {
   const indexOfLastRow = currentPage * rowsPerPage
   const indexOfFirstRow = indexOfLastRow - rowsPerPage
   // slices Data
-  const currentLoan = loans.slice(indexOfFirstRow, indexOfLastRow)
+  const currentLoan = filteredLoan.slice(indexOfFirstRow, indexOfLastRow)
   // total pages
-  const totalPage = Math.ceil(loans.length / rowsPerPage)
+  const totalPage = Math.ceil(filteredLoan.length / rowsPerPage)
 
 
   useEffect(()=>{
@@ -43,7 +46,7 @@ const AdminPage = () => {
   }
 
   const rejectLoans = async (loanId) =>{
-    await API.post(`/loans/admin/${loanId}/reject/`,{
+    await API.post(`/loans/${loanId}/reject/`,{
       status:'rejected'
     })
     alert('Loan Rejected')
@@ -51,9 +54,9 @@ const AdminPage = () => {
       
     }
   return (
-    <>
-    <PageNavBar/>
-
+    <div className='all-page'>
+    <PageNavBar onSearch={setSearchTerm}/>
+    
     <div className='admin-page'>
 
       <div className='admin-header'>
@@ -146,9 +149,9 @@ const AdminPage = () => {
         <button disabled={currentPage === totalPage} onClick={()=>setCurrentPage(prev => prev +1 )}>Next →</button>
       </div>
       <a href='/change-password'>⬡ Change Password</a>
-  
+      
     <PageFooter/>
-    </>
+  </div>
   )
 }
 

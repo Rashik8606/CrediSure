@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import '../css/navbar.css'
 import { Link } from 'react-router-dom'
 
-const PageNavBar = () => {
+const PageNavBar = ({onSearch}) => {
     const [menuOpen, setMenuOpen] = useState(false)
     const [dropdownOpen, setDropdownOpen] = useState(false)
 
@@ -90,11 +90,12 @@ const PageNavBar = () => {
   {/* SEARCH (LAST) */}
   {/* SEARCH (LAST) */}
 <li className="nav-item">
-  <form className="d-flex align-items-center" role="search">
+  <form className="d-flex align-items-center" role="search"> 
     <input
       className="form-control form-control-sm me-1"
       type="search"
       placeholder="Search"
+      onChange={(e) => onSearch(e.target.value)}
       aria-label="Search"
       style={{ width: '140px' }}
     />
