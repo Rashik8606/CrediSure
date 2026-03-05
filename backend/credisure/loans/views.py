@@ -236,3 +236,22 @@ class LoanEmiListView(generics.ListAPIView):
         qs = EmiSchedule.objects.filter(loan_id = loan_id).order_by('month_number')
         print('DEBUG COUNT',qs.count())
         return qs
+
+
+class NextEmiView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        emi = EmiSchedule.objects.filter(loan_borrower = request.user, paid = False).order_by('month_number').first()
+        if not emi:
+            return self.response(
+                {'has_emi':False},
+                status = status.HTTP_200_OK
+            )
+        return self.response ({
+            'has_emi':True,
+            'emi_id':emi.id,
+            'month':emi.month_number,
+            'amount':emi.emi_amount,
+            'due_date':emi.due_date
+        })

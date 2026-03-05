@@ -90,7 +90,7 @@ class VerifyEmiPaymentsView(APIView):
                     status=status.HTTP_403_FORBIDDEN
                 )
             
-            payment.payment_id = data['payment_id']
+            payment.payment_id = data['razorpay_payment_id']
             payment.status = 'success'
             payment.paid_at = timezone.now()
             payment.save()

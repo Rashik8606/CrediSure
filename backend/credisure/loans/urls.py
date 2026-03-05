@@ -3,7 +3,7 @@ from .views import( LoanCreateListView,
                     LoanAdminManageView,
                     LoanAdminListView,
                     LoanKycUploadView,
-                    LoanViewSet,
+                    LoanViewSet,NextEmiView,
                     LoanEmiListView,LoanActiveLoan)
 from rest_framework.routers import DefaultRouter
 
@@ -16,6 +16,7 @@ urlpatterns = [
    
     path('kyc-upload/<int:loan_id>/',LoanKycUploadView.as_view(), name='loan-kyc-upload'),
     path('borrower/active_loan/',LoanActiveLoan.as_view()),
+    path('next-emi/',NextEmiView.as_view()),
 
     #EMI URL
     path('<int:pk>/approve/',LoanViewSet.as_view({'post':'approve'}), name='loan-approve'),
