@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import API from '../api/axios'
 import '../css/borrower-dashboard.css'
+import PageFooter from './PageFooter'
+import PageNavBar from './PageNavBar'
 
 /* ── STATUS COLOR HELPER ── */
 const getStatusClass = (status) => {
@@ -57,10 +59,12 @@ const BorrowerPage = () => {
   const statusClass = getStatusClass(loanInfo?.status)
 
   return (
+    <>
+    
     <div className="borrower-page">
       
       <div className={`bp-container ${mounted ? 'mounted' : ''}`}>
-
+      
         {/* ── HEADER ── */}
         <div className="bp-header">
           <div className="bp-logo-wrap">
@@ -160,6 +164,8 @@ const BorrowerPage = () => {
 
                   <div className="bp-stat-box">
                     <p className="bp-stat-label">Loan Type</p>
+                    <a href='/payments'>REPAY</a>
+
                     <p className="bp-stat-value">
                       {loanInfo.loan_type || 'Standard'}
                     </p>
@@ -208,6 +214,8 @@ const BorrowerPage = () => {
 
       </div>
     </div>
+    
+    </>
   )
 }
 

@@ -10,6 +10,7 @@ import LoanRequestForm from './pages/LoanRequestForm';
 import KycVerification from './pages/KycVerification';
 import PrivateRoute from './route/PrivateRoute';
 import UnAuthrized from './pages/UnAuthrized';
+import PaymentPage from './pages/PaymentPage';
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         <Route path='/change-password' element={< ChangePassword/>}/>
         <Route path='/loan-request-form' element={<PrivateRoute><LoanRequestForm/></PrivateRoute>}/>
         <Route path='/kyc-verification' element={< KycVerification/>}/>
+        <Route path='/payments' element={<PaymentPage/>}/>
 
         
         
