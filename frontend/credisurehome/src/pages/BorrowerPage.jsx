@@ -4,6 +4,9 @@ import API from '../api/axios'
 import '../css/borrower-dashboard.css'
 import PageFooter from './PageFooter'
 import PageNavBar from './PageNavBar'
+import Carousel from './Carousel'
+import CurvedLoop from './CurvedLoop'
+
 
 /* ── STATUS COLOR HELPER ── */
 const getStatusClass = (status) => {
@@ -62,9 +65,7 @@ const BorrowerPage = () => {
     <>
     
     <div className="borrower-page">
-      
       <div className={`bp-container ${mounted ? 'mounted' : ''}`}>
-      
         {/* ── HEADER ── */}
         <div className="bp-header">
           <div className="bp-logo-wrap">
@@ -74,6 +75,7 @@ const BorrowerPage = () => {
               <p className="bp-subtitle">Your personal loan dashboard</p>
             </div>
           </div>
+          
 
           <div className="bp-header-links">
             <a href="/change-password" className="bp-link-pw">🔑 Change Password</a>
@@ -101,7 +103,7 @@ const BorrowerPage = () => {
                       Your application is being reviewed
                     </p>
                   </div>
-
+                
                   <div className={`bp-status-badge ${statusClass}`}>
                     <span className={`bp-status-dot ${statusClass}`} />
                     {loanInfo.status}
@@ -209,12 +211,31 @@ const BorrowerPage = () => {
               Please contact support if this seems incorrect.
             </p>
           </div>
-
         )}
 
       </div>
-    </div>
-    
+      <CurvedLoop 
+  marqueeText="Instant Loan ✦ Trusted Finance ✦ Flexible EMI ✦ Safe Payments ✦ Low Interest ✦"
+  speed={4}
+  curveAmount={180}
+  direction="right"
+  interactive
+  className="custom-text-style"
+/>
+      <div className='carousel-wrapper'>
+        <div className='carousel-inner'>
+        <Carousel
+          baseWidth={300}
+          autoplay
+          autoplayDelay={2000}
+          pauseOnHover={false}
+          loop={true}
+          round
+        />
+        </div>
+      </div>
+  
+    </div>    
     </>
   )
 }
