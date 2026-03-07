@@ -1,271 +1,301 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { motion, useMotionValue, useTransform } from 'motion/react';
-// replace icons with your own if needed
-import { FiCircle, FiCode, FiFileText, FiLayers, FiLayout } from 'react-icons/fi';
-import loan1 from '../assets/loan1.png'
-import loan2 from  '../assets/loan2.png'
-import loan3 from  '../assets/loan3.png'
-import loan4 from  '../assets/loan4.png'
-import loan5 from  '../assets/loan5.png'
-
-import '../css/carousel.css'
+import { motion } from 'motion/react';
+import loan1 from '../assets/loan1.png';
+import loan2 from '../assets/loan2.png';
+import loan3 from '../assets/loan3.png';
+import loan4 from '../assets/loan4.png';
+import loan5 from '../assets/loan5.png';
+import '../css/carousel.css';
 
 const DEFAULT_ITEMS = [
   {
+    id: 1,
+    image: loan1,
+    tag: 'Finance',
     title: 'Trusted Loan Service',
     description: 'Secure and trusted loan platform for everyone.',
-    id: 1,
-    image: loan1
-    
-    
+    accent: '#a855f7',
   },
   {
-    title: 'Instant Loan Approval',
-    description: 'Enjoy flexible repayment with low interest',
     id: 2,
-    image: loan2 
+    image: loan2,
+    tag: 'Approval',
+    title: 'Instant Loan Approval',
+    description: 'Enjoy flexible repayment with low interest.',
+    accent: '#22d3ee',
   },
   {
-    title: 'Low Interest Rate 10%',
-    description: 'Reusable components for your projects.',
     id: 3,
-    image:loan3
+    image: loan3,
+    tag: 'Interest',
+    title: 'Low Interest Rate 10%',
+    description: 'Save more with our lowest interest rates.',
+    accent: '#f97316',
   },
   {
-    title: 'Fast EMI Payments',
-    description: 'Easy EMI options for your convenience',
     id: 4,
-    image:loan4
+    image: loan4,
+    tag: 'EMI',
+    title: 'Fast EMI Payments',
+    description: 'Easy EMI options for your convenience.',
+    accent: '#10b981',
   },
   {
+    id: 5,
+    image: loan5,
+    tag: 'Security',
     title: 'Safe & Secure',
     description: 'Your financial data is fully protected.',
-    id: 5,
-    image:loan5
-  }
+    accent: '#f59e0b',
+  },
 ];
 
-const DRAG_BUFFER = 0;
+const SPRING = { type: 'spring', stiffness: 280, damping: 28 };
+const DRAG_BUFFER = 40;
 const VELOCITY_THRESHOLD = 500;
-const GAP = 16;
-const SPRING_OPTIONS = { type: 'spring', stiffness: 300, damping: 30 };
-
-function CarouselItem({ item, index, itemWidth, round, trackItemOffset, x, transition }) {
-  const range = [-(index + 1) * trackItemOffset, -index * trackItemOffset, -(index - 1) * trackItemOffset];
-  const outputRange = [90, 0, -90];
-  const rotateY = useTransform(x, range, outputRange, { clamp: false });
-
-  return (
-    <motion.div
-      key={`${item?.id ?? index}-${index}`}
-      className={`carousel-item ${round ? 'round' : ''}`}
-      style={{
-        width: itemWidth,
-        height: round ? itemWidth : '100%',
-        rotateY: rotateY,
-        ...(round && { borderRadius: '50%' })
-      }}
-      transition={transition}
-    >
-
-      {item.image && (
-        <img src={item.image} alt={item.title} className="carousel-image"/>
-      )}
-
-      <div className="carousel-item-content">
-        <div className="carousel-item-title">{item.title}</div>
-        <p className="carousel-item-description">{item.description}</p>
-      </div>
-
-    </motion.div>
-  );
-}
 
 export default function Carousel({
   items = DEFAULT_ITEMS,
-  baseWidth = 300,
-  autoplay = false,
-  autoplayDelay = 3000,
-  pauseOnHover = false,
-  loop = false,
-  round = false
+  autoplay = true,
+  autoplayDelay = 3500,
+  pauseOnHover = true,
+  loop = true,
 }) {
-  const containerPadding = 16;
-  const itemWidth = baseWidth - containerPadding * 2;
-  const trackItemOffset = itemWidth + GAP;
   const itemsForRender = useMemo(() => {
-    if (!loop) return items;
-    if (items.length === 0) return [];
+    if (!loop || items.length === 0) return items;
     return [items[items.length - 1], ...items, items[0]];
   }, [items, loop]);
 
   const [position, setPosition] = useState(loop ? 1 : 0);
-  const x = useMotionValue(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isJumping, setIsJumping] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const containerRef = useRef(null);
-  useEffect(() => {
-    if (pauseOnHover && containerRef.current) {
-      const container = containerRef.current;
-      const handleMouseEnter = () => setIsHovered(true);
-      const handleMouseLeave = () => setIsHovered(false);
-      container.addEventListener('mouseenter', handleMouseEnter);
-      container.addEventListener('mouseleave', handleMouseLeave);
-      return () => {
-        container.removeEventListener('mouseenter', handleMouseEnter);
-        container.removeEventListener('mouseleave', handleMouseLeave);
-      };
-    }
-  }, [pauseOnHover]);
+  const rafRef = useRef(null);
+  const startRef = useRef(null);
 
-  useEffect(() => {
-    if (!autoplay || itemsForRender.length <= 1) return undefined;
-    if (pauseOnHover && isHovered) return undefined;
+  const activeIndex =
+    items.length === 0
+      ? 0
+      : loop
+      ? (position - 1 + items.length) % items.length
+      : Math.min(position, items.length - 1);
 
-    const timer = setInterval(() => {
-      setPosition(prev => Math.min(prev + 1, itemsForRender.length - 1));
-    }, autoplayDelay);
+  const activeItem = items[activeIndex] ?? items[0];
 
-    return () => clearInterval(timer);
-  }, [autoplay, autoplayDelay, isHovered, pauseOnHover, itemsForRender.length]);
-
-  useEffect(() => {
-    const startingPosition = loop ? 1 : 0;
-    setPosition(startingPosition);
-    x.set(-startingPosition * trackItemOffset);
-  }, [items.length, loop, trackItemOffset, x]);
-
-  useEffect(() => {
-    if (!loop && position > itemsForRender.length - 1) {
-      setPosition(Math.max(0, itemsForRender.length - 1));
-    }
-  }, [itemsForRender.length, loop, position]);
-
-  const effectiveTransition = isJumping ? { duration: 0 } : SPRING_OPTIONS;
-
-  const handleAnimationStart = () => {
-    setIsAnimating(true);
+  /* ── progress bar ── */
+  const runProgress = (ts) => {
+    if (!startRef.current) startRef.current = ts;
+    const pct = Math.min(((ts - startRef.current) / autoplayDelay) * 100, 100);
+    setProgress(pct);
+    if (pct < 100) rafRef.current = requestAnimationFrame(runProgress);
   };
 
+  const resetProgress = () => {
+    cancelAnimationFrame(rafRef.current);
+    startRef.current = null;
+    setProgress(0);
+    rafRef.current = requestAnimationFrame(runProgress);
+  };
+
+  useEffect(() => {
+    if (!autoplay || (pauseOnHover && isHovered)) {
+      cancelAnimationFrame(rafRef.current);
+      return;
+    }
+    rafRef.current = requestAnimationFrame(runProgress);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [autoplay, isHovered, pauseOnHover, position]);
+
+  /* ── autoplay timer ── */
+  useEffect(() => {
+    if (!autoplay || itemsForRender.length <= 1) return;
+    if (pauseOnHover && isHovered) return;
+    const t = setInterval(() => {
+      setPosition(p => p + 1);
+      resetProgress();
+    }, autoplayDelay);
+    return () => clearInterval(t);
+  }, [autoplay, autoplayDelay, isHovered, pauseOnHover, itemsForRender.length]);
+
+  /* ── hover ── */
+  useEffect(() => {
+    if (!pauseOnHover || !containerRef.current) return;
+    const el = containerRef.current;
+    const enter = () => setIsHovered(true);
+    const leave = () => setIsHovered(false);
+    el.addEventListener('mouseenter', enter);
+    el.addEventListener('mouseleave', leave);
+    return () => {
+      el.removeEventListener('mouseenter', enter);
+      el.removeEventListener('mouseleave', leave);
+    };
+  }, [pauseOnHover]);
+
+  /* ── loop jump ── */
+  const handleAnimationStart = () => setIsAnimating(true);
   const handleAnimationComplete = () => {
-    if (!loop || itemsForRender.length <= 1) {
-      setIsAnimating(false);
+    if (!loop || itemsForRender.length <= 1) { setIsAnimating(false); return; }
+    if (position === itemsForRender.length - 1) {
+      setIsJumping(true); setPosition(1);
+      requestAnimationFrame(() => { setIsJumping(false); setIsAnimating(false); });
       return;
     }
-    const lastCloneIndex = itemsForRender.length - 1;
-
-    if (position === lastCloneIndex) {
-      setIsJumping(true);
-      const target = 1;
-      setPosition(target);
-      x.set(-target * trackItemOffset);
-      requestAnimationFrame(() => {
-        setIsJumping(false);
-        setIsAnimating(false);
-      });
-      return;
-    }
-
     if (position === 0) {
-      setIsJumping(true);
-      const target = items.length;
-      setPosition(target);
-      x.set(-target * trackItemOffset);
-      requestAnimationFrame(() => {
-        setIsJumping(false);
-        setIsAnimating(false);
-      });
+      setIsJumping(true); setPosition(items.length);
+      requestAnimationFrame(() => { setIsJumping(false); setIsAnimating(false); });
       return;
     }
-
     setIsAnimating(false);
   };
 
+  /* ── drag ── */
   const handleDragEnd = (_, info) => {
     const { offset, velocity } = info;
-    const direction =
-      offset.x < -DRAG_BUFFER || velocity.x < -VELOCITY_THRESHOLD
-        ? 1
-        : offset.x > DRAG_BUFFER || velocity.x > VELOCITY_THRESHOLD
-          ? -1
-          : 0;
-
-    if (direction === 0) return;
-
-    setPosition(prev => {
-      const next = prev + direction;
-      const max = itemsForRender.length - 1;
-      return Math.max(0, Math.min(next, max));
-    });
+    const dir =
+      offset.x < -DRAG_BUFFER || velocity.x < -VELOCITY_THRESHOLD ? 1
+      : offset.x > DRAG_BUFFER || velocity.x > VELOCITY_THRESHOLD ? -1
+      : 0;
+    if (dir === 0) return;
+    setPosition(p => Math.max(0, Math.min(p + dir, itemsForRender.length - 1)));
+    resetProgress();
   };
 
-  const dragProps = loop
-    ? {}
-    : {
-        dragConstraints: {
-          left: -trackItemOffset * Math.max(itemsForRender.length - 1, 0),
-          right: 0
-        }
-      };
+  const goTo  = (idx) => { setPosition(loop ? idx + 1 : idx); resetProgress(); };
+  const goNext = () => { setPosition(p => p + 1); resetProgress(); };
+  const goPrev = () => { setPosition(p => Math.max(p - 1, 0)); resetProgress(); };
 
-  const activeIndex =
-    items.length === 0 ? 0 : loop ? (position - 1 + items.length) % items.length : Math.min(position, items.length - 1);
+  const effectiveTransition = isJumping ? { duration: 0 } : SPRING;
 
   return (
-    <div
-      ref={containerRef}
-      className={`carousel-container ${round ? 'round' : ''}`}
-      style={{
-        width: `${baseWidth}px`,
-        ...(round && { height: `${baseWidth}px`, borderRadius: '50%' })
-      }}
-    >
+    <div className="cs-root" ref={containerRef}>
+
+      {/* Ambient glow */}
       <motion.div
-        className="carousel-track"
-        drag={isAnimating ? false : 'x'}
-        {...dragProps}
-        style={{
-          width: itemWidth,
-          gap: `${GAP}px`,
-          perspective: 1000,
-          perspectiveOrigin: `${position * trackItemOffset + itemWidth / 2}px 50%`,
-          x
+        className="cs-glow"
+        animate={{
+          background: `radial-gradient(ellipse 90% 70% at 65% 45%, ${activeItem.accent}40 0%, transparent 68%)`,
         }}
-        onDragEnd={handleDragEnd}
-        animate={{ x: -(position * trackItemOffset) }}
-        transition={effectiveTransition}
-        onAnimationStart={handleAnimationStart}
-        onAnimationComplete={handleAnimationComplete}
-      >
-        {itemsForRender.map((item, index) => (
-          <CarouselItem
-            key={`${item?.id ?? index}-${index}`}
-            item={item}
-            index={index}
-            itemWidth={itemWidth}
-            round={round}
-            trackItemOffset={trackItemOffset}
-            x={x}
-            transition={effectiveTransition}
-          />
-        ))}
-      </motion.div>
-      <div className={`carousel-indicators-container ${round ? 'round' : ''}`}>
-        <div className="carousel-indicators">
-          {items.map((_, index) => (
-            <motion.div
-              key={index}
-              className={`carousel-indicator ${activeIndex === index ? 'active' : 'inactive'}`}
+        transition={{ duration: 0.8 }}
+      />
+
+      {/* Slide track */}
+      <div className="cs-clip">
+        <motion.div
+          className="cs-track"
+          drag={isAnimating ? false : 'x'}
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.08}
+          style={{ width: `${itemsForRender.length * 100}%` }}
+          animate={{ x: `${-(position / itemsForRender.length) * 100}%` }}
+          transition={effectiveTransition}
+          onDragEnd={handleDragEnd}
+          onAnimationStart={handleAnimationStart}
+          onAnimationComplete={handleAnimationComplete}
+        >
+          {itemsForRender.map((item, index) => {
+            const itemActive = loop ? index - 1 === activeIndex : index === activeIndex;
+            return (
+              <div
+                key={`${item.id}-${index}`}
+                className="cs-slide"
+                style={{ width: `${100 / itemsForRender.length}%` }}
+              >
+                {/* Image */}
+                <motion.div
+                  className="cs-img-wrap"
+                  animate={{ scale: itemActive ? 1.06 : 1 }}
+                  transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
+                >
+                  <img src={item.image} alt={item.title} className="cs-img" />
+                </motion.div>
+
+                {/* Overlays */}
+                <div className="cs-overlay-base" />
+                <div className="cs-overlay-grad" />
+
+                {/* Text content */}
+                <div className="cs-content">
+                  <motion.span
+                    className="cs-tag"
+                    style={{ color: item.accent, borderColor: `${item.accent}66` }}
+                    initial={false}
+                    animate={itemActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+                    transition={{ duration: 0.45, delay: 0.06 }}
+                  >
+                    {item.tag}
+                  </motion.span>
+
+                  <motion.h2
+                    className="cs-title"
+                    initial={false}
+                    animate={itemActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                    transition={{ duration: 0.5, delay: 0.14 }}
+                  >
+                    {item.title}
+                  </motion.h2>
+
+                  <motion.p
+                    className="cs-desc"
+                    initial={false}
+                    animate={itemActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+                    transition={{ duration: 0.45, delay: 0.22 }}
+                  >
+                    {item.description}
+                  </motion.p>
+                </div>
+              </div>
+            );
+          })}
+        </motion.div>
+      </div>
+
+      {/* Prev / Next */}
+      <button className="cs-nav cs-prev" onClick={goPrev} aria-label="Previous">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
+      </button>
+      <button className="cs-nav cs-next" onClick={goNext} aria-label="Next">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+          <path d="M9 18l6-6-6-6" />
+        </svg>
+      </button>
+
+      {/* Bottom bar */}
+      <div className="cs-bottom">
+        <div className="cs-dots">
+          {items.map((item, i) => (
+            <motion.button
+              key={i}
+              className="cs-dot"
+              onClick={() => goTo(i)}
               animate={{
-                scale: activeIndex === index ? 1.2 : 1
+                width: activeIndex === i ? 28 : 8,
+                backgroundColor: activeIndex === i ? item.accent : 'rgba(255,255,255,0.28)',
               }}
-              onClick={() => setPosition(loop ? index + 1 : index)}
-              transition={{ duration: 0.15 }}
+              transition={{ duration: 0.3 }}
+              aria-label={`Go to slide ${i + 1}`}
             />
           ))}
         </div>
+
+        <div className="cs-progress-track">
+          <motion.div
+            className="cs-progress-fill"
+            style={{ backgroundColor: activeItem.accent }}
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.08, ease: 'linear' }}
+          />
+        </div>
+
+        <span className="cs-count">
+          <strong>{String(activeIndex + 1).padStart(2, '0')}</strong>
+          <span className="cs-count-sep"> / </span>
+          {String(items.length).padStart(2, '0')}
+        </span>
       </div>
     </div>
   );
