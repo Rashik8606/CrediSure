@@ -89,6 +89,8 @@
   animation: floatCard 7s ease-in-out infinite;
 }
 
+
+
 /* Top glow line */
 .login-card::before {
   content: '';
@@ -310,3 +312,71 @@ select.input option {
   }
   .login-card h2 { font-size: 19px; }
 }
+
+
+/* ── Paste these at the BOTTOM of your login.css ── */
+
+/* THEME TOGGLE BUTTON */
+.login-theme-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+  padding: 8px 16px;
+  border-radius: 99px;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  background: rgba(12, 10, 22, 0.8);
+  color: #a78bfa;
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+}
+.login-theme-btn:hover {
+  border-color: #8b5cf6;
+  background: rgba(139, 92, 246, 0.15);
+  transform: translateY(-1px);
+}
+
+
+
+/* LIGHT MODE OVERRIDE */
+.login-container.light {
+  background-color: #f1f5f9;
+  background-image:
+    radial-gradient(ellipse 100% 60% at 50% -10%, rgba(139, 92, 246, 0.12) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 50% at 90% 95%,  rgba(16, 185, 129, 0.08) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 5%  80%,  rgba(99, 102, 241, 0.06) 0%, transparent 55%);
+}
+.login-container.light .login-theme-btn {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: #e2e8f0;
+  color: #6366f1;
+}
+
+
+/* LIGHT MODE CARD OVERRIDES */
+.login-container.light .login-card {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: #e2e8f0;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.1);
+}
+
+.login-container.light .login-card h2   { color: #1e293b; }
+.login-container.light .subtitle        { color: #6b7280; }
+.login-container.light .label           { color: #4b5563; }
+
+.login-container.light .input {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #1e293b;
+}
+.login-container.light .input::placeholder { color: #9ca3af; }
+.login-container.light .input:focus {
+  border-color: #8b5cf6;
+  background: #ffffff;
+}
+
+.login-container.light .register-link  { color: #6b7280; }

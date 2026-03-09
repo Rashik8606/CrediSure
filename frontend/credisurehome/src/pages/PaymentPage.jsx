@@ -19,6 +19,22 @@ const PaymentPage = () => {
   const [processing, setProcessing] = useState(false)
   const [mounted, setMounted]     = useState(false)
 
+  // DARK MODE SYSTEM
+  const [darkMode, setDarkMode] = useState(()=>{
+    const saved = localStorage.getItem('bp-theme')
+    return saved ? saved === 'dark': true
+  })
+  useEffect(()=>{
+    const onStorage = (e)=> {
+      if (e.key === 'bp-theme'){
+        setDarkMode(e.newValue === 'dark')
+      }
+    }
+    window.addEventListener('storage', onStorage)
+    return ()=> window.removeEventListener('storage',onStorage)
+  })
+
+
   /* ── FETCH NEXT EMI ── */
   useEffect(() => {
     API.get('/loans/next-emi/')
@@ -81,11 +97,14 @@ const PaymentPage = () => {
           day: '2-digit', month: 'short', year: 'numeric',
         })
       : '—'
-
+   
+  const theme = darkMode ? 'dark':'light'   
+  
+  
   /* ── LOADING STATE ── */
   if (loading) {
     return (
-      <div className="pp-loading-wrap">
+      <div className={`pp-loading-wrap ${theme}`}>
         <div className="pp-loading-card">
           <div className="pp-spinner" />
           <p className="pp-loading-text">Checking EMI Details…</p>
@@ -98,7 +117,7 @@ const PaymentPage = () => {
   /* ── NO PENDING EMI ── */
   if (!nextEmi || !nextEmi.has_emi) {
     return (
-      <div className="payment-page">
+      <div className={`payment-page ${theme}`}>
         <div className={`pp-container ${mounted ? 'mounted' : ''}`}>
           <div className="pp-empty-state">
             <div className="pp-empty-icon">🎉</div>
@@ -115,7 +134,7 @@ const PaymentPage = () => {
 
   /* ── MAIN PAYMENT VIEW ── */
   return (
-    <div className="payment-page">
+    <div className={`payment-page ${theme}`}>
       <div className={`pp-container ${mounted ? 'mounted' : ''}`}>
 
         {/* ── HEADER ── */}
@@ -198,7 +217,7 @@ const PaymentPage = () => {
               </div>
 
               {/* Info notice */}
-              <div className="pp-info-box">
+              <div className={`pp-info-box ${theme}`}>
                 <span className="pp-info-icon">🔒</span>
                 <span className="pp-info-text">
                   Your payment is encrypted and processed securely via Razorpay.

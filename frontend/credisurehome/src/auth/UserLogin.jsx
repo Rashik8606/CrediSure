@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import API from "../api/axios";
 import { Link, useNavigate } from 'react-router-dom'
 import '../css/login.css'
@@ -13,6 +13,18 @@ function Login() {
     const [ password, setPassword ] = useState('')
     const [ secretKey, setSecretKey ] = useState('')
     const [ error, setError ] = useState('')
+
+
+    const [darkMode, setDarkMode]= useState(()=>{
+        const saved = localStorage.getItem('bp-theme')
+        return saved ? saved === 'dark' : true
+    })
+
+    const toggleTheme = () =>{
+        const next = !darkMode
+        setDarkMode(next)
+        localStorage.setItem('bp-theme', next ? 'dark': 'light')
+    }
 
 
     const handleLogin = async (e) =>{
@@ -63,7 +75,10 @@ function Login() {
     }
 
     return (
-        <div className="login-container">
+        <div className={`login-container ${darkMode ? 'dark':'light'}`}>
+            <button className="login-theme-btn" onClick={toggleTheme} >
+                {darkMode ? '☀️  Light':'🌙  dark'}
+            </button>
             <form className="login-card" onSubmit={handleLogin}>
                 <h2>Loan Management Portal</h2>
                 <p className="subtitle">Secure access to your financial journey</p>

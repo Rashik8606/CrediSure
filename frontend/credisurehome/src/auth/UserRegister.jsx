@@ -16,6 +16,16 @@ function UserRegister() {
     const [ secretKey, setSecretKey ] = useState('')
 
 
+    const [darkMode, setDarkMode] = useState(()=>{
+        const saved = localStorage.getItem('bp-theme')
+        return saved === saved ? 'dark':true
+    })
+
+    const toggeleTheme = ()=>{
+        const next = !darkMode
+        setDarkMode(next)
+        localStorage.setItem('bp-theme', next ? 'dark':'light')
+    }
 
     const handleRegister = async (e) =>{
         e.preventDefault();
@@ -50,7 +60,10 @@ function UserRegister() {
         }
     };
     return (
-        <div className="login-container">
+        <div className={`login-container ${darkMode ?'dark':'light'}`}>
+            <button className="login-theme-btn" onClick={toggeleTheme}>
+                {darkMode ? 'Dark':'light'}
+            </button>
             <form className="login-card" onSubmit={handleRegister}>
                 <h2>User Register Portal</h2>
                 

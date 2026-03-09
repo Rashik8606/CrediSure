@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'motion/react';
-import loan1 from '../assets/loan1.png';
-import loan2 from '../assets/loan2.png';
-import loan3 from '../assets/loan3.png';
-import loan4 from '../assets/loan4.png';
-import loan5 from '../assets/loan5.png';
+import loan1 from '../assets/loan1.jpg';
+import loan2 from '../assets/loan2.jpg';
+import loan3 from '../assets/loan3.jpg';
+import loan4 from '../assets/loan4.jpg';
+import loan5 from '../assets/loan5.jpg';
 import '../css/carousel.css';
 
 const DEFAULT_ITEMS = [

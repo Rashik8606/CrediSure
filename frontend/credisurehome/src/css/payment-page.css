@@ -30,16 +30,20 @@
 /* ── PAGE SHELL ── */
 .payment-page {
   min-height: 100vh;
-  background: #07070e;
   display: flex;
   align-items: flex-start;
   justify-content: center;
   padding: 48px 20px 80px;
   font-family: 'Syne', sans-serif;
-  color: #f1f5f9;
   position: relative;
   overflow: hidden;
+  transition: background 0.3s ease, color 0.3s ease;
 }
+
+/* Dark */
+.payment-page.dark  { background: #07070e; color: #f1f5f9; }
+/* Light */
+.payment-page.light { background: #f1f5f9; color: #1e293b; }
 
 /* Ambient background glows */
 .payment-page::before,
@@ -115,20 +119,27 @@
   font-size: 22px;
   font-weight: 800;
   letter-spacing: -0.5px;
-  background: linear-gradient(90deg, #e0e7ff, #c7d2fe);
+  background: linear-gradient(90deg, #6366f1, #8b5cf6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin-bottom: 3px;
 }
+/* Dark title gets lighter gradient */
+.payment-page.dark .pp-title {
+  background: linear-gradient(90deg, #e0e7ff, #c7d2fe);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
 
 .pp-subtitle {
   font-size: 11px;
-  color: #4b5563;
   font-family: 'JetBrains Mono', monospace;
   letter-spacing: 1.5px;
   text-transform: uppercase;
 }
+.payment-page.dark  .pp-subtitle { color: #4b5563; }
+.payment-page.light .pp-subtitle { color: #9ca3af; }
 
 .pp-back-link {
   font-size: 13px;
@@ -136,49 +147,50 @@
   color: #818cf8;
   text-decoration: none;
   padding: 8px 16px;
-  border: 1px solid #2a2a45;
   border-radius: 9px;
-  background: #0d0d1f;
-  transition: border-color 0.2s, background 0.2s;
   font-family: 'Syne', sans-serif;
+  transition: border-color 0.2s, background 0.2s;
+  border: 1px solid;
 }
-.pp-back-link:hover {
-  border-color: #6366f1;
-  background: #12122a;
-}
+.payment-page.dark  .pp-back-link { background: #0d0d1f; border-color: #2a2a45; }
+.payment-page.light .pp-back-link { background: #ffffff; border-color: #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.payment-page.dark  .pp-back-link:hover { border-color: #6366f1; background: #12122a; }
+.payment-page.light .pp-back-link:hover { border-color: #6366f1; background: #eef2ff; }
 
 /* ── DIVIDER ── */
 .pp-divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent, #1e1e35, transparent);
   margin-bottom: 32px;
 }
+.payment-page.dark  .pp-divider { background: linear-gradient(90deg, transparent, #1e1e35, transparent); }
+.payment-page.light .pp-divider { background: linear-gradient(90deg, transparent, #e2e8f0, transparent); }
 
 /* ── SECTION LABEL ── */
 .pp-section-label {
   font-size: 10px;
-  color: #4b5563;
   font-family: 'JetBrains Mono', monospace;
   letter-spacing: 2px;
   text-transform: uppercase;
   margin-bottom: 14px;
 }
+.payment-page.dark  .pp-section-label { color: #4b5563; }
+.payment-page.light .pp-section-label { color: #9ca3af; }
 
 /* ── FADE UP ── */
 .pp-fade-up {
   animation: fadeUp 0.6s cubic-bezier(.4,0,.2,1) both;
 }
 
-/* ─────────────────────────────────── */
 /* ── PAYMENT CARD ── */
-/* ─────────────────────────────────── */
 .pp-card {
-  background: linear-gradient(145deg, #0d0d1f, #0a0a18);
-  border: 1px solid #1e1e35;
   border-radius: 20px;
   overflow: hidden;
   position: relative;
+  border: 1px solid;
+  transition: background 0.3s, border-color 0.3s;
 }
+.payment-page.dark  .pp-card { background: linear-gradient(145deg, #0d0d1f, #0a0a18); border-color: #1e1e35; }
+.payment-page.light .pp-card { background: #ffffff; border-color: #e2e8f0; box-shadow: 0 4px 24px rgba(0,0,0,0.06); }
 
 .pp-card-top-bar {
   height: 3px;
@@ -201,16 +213,18 @@
 .pp-loan-title {
   font-size: 20px;
   font-weight: 800;
-  color: #f1f5f9;
   letter-spacing: -0.5px;
   margin-bottom: 4px;
 }
+.payment-page.dark  .pp-loan-title { color: #f1f5f9; }
+.payment-page.light .pp-loan-title { color: #1e293b; }
 
 .pp-loan-subtitle {
   font-size: 12px;
-  color: #6b7280;
   font-family: 'JetBrains Mono', monospace;
 }
+.payment-page.dark  .pp-loan-subtitle { color: #6b7280; }
+.payment-page.light .pp-loan-subtitle { color: #9ca3af; }
 
 /* Secure badge */
 .pp-secure-badge {
@@ -241,12 +255,13 @@
 .pp-loan-stats {
   display: flex;
   align-items: stretch;
-  background: #07070e;
-  border: 1px solid #12122a;
   border-radius: 14px;
   overflow: hidden;
   margin-bottom: 20px;
+  border: 1px solid;
 }
+.payment-page.dark  .pp-loan-stats { background: #07070e; border-color: #12122a; }
+.payment-page.light .pp-loan-stats { background: #f8fafc; border-color: #e2e8f0; }
 
 .pp-stat-box {
   flex: 1;
@@ -255,30 +270,31 @@
 
 .pp-stat-divider {
   width: 1px;
-  background: #12122a;
   flex-shrink: 0;
 }
+.payment-page.dark  .pp-stat-divider { background: #12122a; }
+.payment-page.light .pp-stat-divider { background: #e2e8f0; }
 
 .pp-stat-label {
   font-size: 9px;
-  color: #374151;
   font-family: 'JetBrains Mono', monospace;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   margin-bottom: 6px;
 }
+.payment-page.dark  .pp-stat-label { color: #374151; }
+.payment-page.light .pp-stat-label { color: #9ca3af; }
 
 .pp-stat-value {
   font-size: 15px;
   font-weight: 800;
-  color: #e2e8f0;
   letter-spacing: -0.3px;
 }
+.payment-page.dark  .pp-stat-value { color: #e2e8f0; }
+.payment-page.light .pp-stat-value { color: #1e293b; }
 
 /* ── AMOUNT HIGHLIGHT BOX ── */
 .pp-amount-box {
-  background: #07070e;
-  border: 1px solid #1e1e35;
   border-radius: 14px;
   padding: 20px 22px;
   display: flex;
@@ -287,7 +303,10 @@
   margin-bottom: 24px;
   position: relative;
   overflow: hidden;
+  border: 1px solid;
 }
+.payment-page.dark  .pp-amount-box { background: #07070e; border-color: #1e1e35; }
+.payment-page.light .pp-amount-box { background: #f8fafc; border-color: #e2e8f0; }
 
 .pp-amount-box::before {
   content: '';
@@ -299,12 +318,13 @@
 
 .pp-amount-label {
   font-size: 9px;
-  color: #374151;
   font-family: 'JetBrains Mono', monospace;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   margin-bottom: 8px;
 }
+.payment-page.dark  .pp-amount-label { color: #374151; }
+.payment-page.light .pp-amount-label { color: #9ca3af; }
 
 .pp-amount-value {
   font-size: 34px;
@@ -335,9 +355,10 @@
   font-size: 9px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #374151;
   font-family: 'JetBrains Mono', monospace;
 }
+.payment-page.dark  .pp-ssl-text { color: #374151; }
+.payment-page.light .pp-ssl-text { color: #9ca3af; }
 
 .pp-ssl-bar {
   width: 36px;
@@ -351,12 +372,13 @@
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  background: #6366f10d;
-  border: 1px solid #6366f120;
   border-radius: 12px;
   padding: 14px 16px;
   margin-bottom: 24px;
+  border: 1px solid;
 }
+.payment-page.dark  .pp-info-box { background: #6366f10d; border-color: #6366f120; }
+.payment-page.light .pp-info-box { background: #eef2ff;   border-color: #c7d2fe; }
 
 .pp-info-icon {
   font-size: 16px;
@@ -366,10 +388,11 @@
 
 .pp-info-text {
   font-size: 13px;
-  color: #9ca3af;
   line-height: 1.6;
   font-family: 'JetBrains Mono', monospace;
 }
+.payment-page.dark  .pp-info-text { color: #9ca3af; }
+.payment-page.light .pp-info-text { color: #6b7280; }
 
 /* ── PAY BUTTON ── */
 .pp-pay-btn {
@@ -421,34 +444,36 @@
   margin-top: 16px;
   text-align: center;
   font-size: 10px;
-  color: #2a2a45;
   font-family: 'JetBrains Mono', monospace;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
+.payment-page.dark  .pp-card-footer { color: #2a2a45; }
+.payment-page.light .pp-card-footer { color: #cbd5e1; }
 
-/* ─────────────────────────────────── */
 /* ── LOADING SCREEN ── */
-/* ─────────────────────────────────── */
 .pp-loading-wrap {
   min-height: 100vh;
-  background: #07070e;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Syne', sans-serif;
+  transition: background 0.3s;
 }
+.pp-loading-wrap.dark  { background: #07070e; }
+.pp-loading-wrap.light { background: #f1f5f9; }
 
 .pp-loading-card {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  background: linear-gradient(135deg, #0d0d1f, #0a0a18);
-  border: 1px solid #1e1e35;
   border-radius: 20px;
   padding: 48px 56px;
+  border: 1px solid;
 }
+.pp-loading-wrap.dark  .pp-loading-card { background: linear-gradient(135deg, #0d0d1f, #0a0a18); border-color: #1e1e35; }
+.pp-loading-wrap.light .pp-loading-card { background: #ffffff; border-color: #e2e8f0; box-shadow: 0 8px 32px rgba(0,0,0,0.08); }
 
 .pp-spinner {
   width: 44px;
@@ -470,14 +495,13 @@
 
 .pp-loading-subtext {
   font-size: 11px;
-  color: #4b5563;
   font-family: 'JetBrains Mono', monospace;
   letter-spacing: 1px;
 }
+.pp-loading-wrap.dark  .pp-loading-subtext { color: #4b5563; }
+.pp-loading-wrap.light .pp-loading-subtext { color: #9ca3af; }
 
-/* ─────────────────────────────────── */
 /* ── EMPTY STATE ── */
-/* ─────────────────────────────────── */
 .pp-empty-state {
   text-align: center;
   padding: 60px 20px;
@@ -491,16 +515,18 @@
 .pp-empty-text {
   font-size: 16px;
   font-weight: 700;
-  color: #2a2a45;
   margin-bottom: 8px;
 }
+.payment-page.dark  .pp-empty-text { color: #2a2a45; }
+.payment-page.light .pp-empty-text { color: #94a3b8; }
 
 .pp-empty-subtext {
   font-size: 12px;
-  color: #1e1e35;
   font-family: 'JetBrains Mono', monospace;
   margin-bottom: 28px;
 }
+.payment-page.dark  .pp-empty-subtext { color: #1e1e35; }
+.payment-page.light .pp-empty-subtext { color: #cbd5e1; }
 
 .pp-empty-btn {
   display: inline-block;
@@ -521,9 +547,7 @@
   transform: translateY(-1px);
 }
 
-/* ─────────────────────────────────── */
 /* ── PROCESSING OVERLAY ── */
-/* ─────────────────────────────────── */
 .pp-overlay {
   position: absolute;
   inset: 0;
