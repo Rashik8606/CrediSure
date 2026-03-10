@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import '../css/borrowerNavBar.css'
 
-const BorrowerNavBar = ({ darkMode, setDarkMode, hasActiveLoan }) => {
+const BorrowerNavBar = ({ darkMode, toggleTheme, hasActiveLoan, activePage }) => {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
+
+
+  // const toggeleTheme = () => {
+  //   const next = !darkMode
+  //   setDarkMode(next)
+  //   localStorage.setItem('bp-theme', next ? 'dark':'light')
+  // }
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -53,12 +60,12 @@ const BorrowerNavBar = ({ darkMode, setDarkMode, hasActiveLoan }) => {
           {/* ── LOGO ── */}
           <a href="/" className="bp-navbar-logo">
             <div className="bp-navbar-logo-icon">💳</div>
-            <span className="bp-navbar-logo-text">LoanPortal</span>
+            <span className="bp-navbar-logo-text">{activePage === 'profile' ? 'Profile' : 'LoanPortal'}</span>
           </a>
 
           {/* ── DESKTOP LINKS ── */}
           <div className="bp-navbar-links">
-            <a href="/borrower" className="bp-navbar-link active">Dashboard</a>
+            <a href="/borrower/dashboard" className={`bp-navbar-link ${activePage === 'dashboard'?'active':''}`}>Dashboard</a>
             <a
               href="/loan-request-form"
               className="bp-navbar-link"
@@ -66,14 +73,14 @@ const BorrowerNavBar = ({ darkMode, setDarkMode, hasActiveLoan }) => {
             >
               Apply
             </a>
-            <a href="/change-password" className="bp-navbar-link">Account</a>
+            <a href="/change-password" className={`bp-navbar-link ${activePage === 'profile'?'active':''}`}>Account</a>
           </div>
 
           {/* ── RIGHT ACTIONS ── */}
           <div className="bp-navbar-actions">
             <button
               className="bp-navbar-theme-btn"
-              onClick={() => setDarkMode(prev => !prev)}
+              onClick={toggleTheme}
               aria-label="Toggle theme"
             >
               <span className="bp-navbar-theme-icon">{darkMode ? '☀️' : '🌙'}</span>
@@ -111,7 +118,7 @@ const BorrowerNavBar = ({ darkMode, setDarkMode, hasActiveLoan }) => {
           <div className="bp-navbar-mobile-divider" />
           <button
             className="bp-navbar-mobile-theme"
-            onClick={() => { setDarkMode(prev => !prev); setMenuOpen(false) }}
+            onClick={() => { toggleTheme(); setMenuOpen(false) }}
           >
             {darkMode ? '☀️ Switch to Light Mode' : '🌙 Switch to Dark Mode'}
           </button>

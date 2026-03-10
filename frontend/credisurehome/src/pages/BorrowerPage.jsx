@@ -28,10 +28,13 @@ const BorrowerPage = () => {
     return saved ? saved === 'dark' : true
   })
 
-  useEffect(() => {
-    localStorage.setItem('bp-theme', darkMode ? 'dark' : 'light')
-  }, [darkMode])
+  const toggleTheme = () => {
+    const next = !darkMode
+    setDarkMode(next)
+    localStorage.setItem('bp-theme', next ? 'dark':'light')
+  }
 
+  
   useEffect(() => {
     API.get('/loans/borrower/active_loan/')
       .then((res) => {
@@ -72,8 +75,9 @@ const BorrowerPage = () => {
       {/* ── NAVBAR — passes hasActiveLoan for Apply guard ── */}
       <BorrowerNavBar
         darkMode={darkMode}
-        setDarkMode={setDarkMode}
+        toggleTheme={toggleTheme}
         hasActiveLoan={hasActiveLoan}
+        activePage='dashboard'
       />
 
       {/* ── CAROUSEL ── */}

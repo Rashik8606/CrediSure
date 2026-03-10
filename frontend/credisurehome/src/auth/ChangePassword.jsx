@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import API from '../api/axios';
 import { Link } from 'react-router-dom';
 import { getUserRole } from '../utils/auth';
+import BorrowerNavBar from '../pages/BorrowerNavBar';
 
 const ChangePassword = () => {
 
@@ -10,6 +11,18 @@ const ChangePassword = () => {
     const [confirmPassword, confirmSetPassword] = useState('')
     const [message, setMessage] = useState('')
     const [error, setError] = useState('')
+
+    const [darkMode, setDarkMode] = useState(()=>{
+        const saved = localStorage.getItem('bp-theme')
+        return saved ? saved === 'dark':'light'
+    })
+
+    const toggleTheme = () =>{
+        const next = !darkMode
+        setDarkMode(next)
+        localStorage.setItem('bp-theme', next? 'dark':'light')
+    }
+
 
     const role = getUserRole()
 
@@ -41,6 +54,11 @@ const ChangePassword = () => {
 
   return (
     <div>
+        <BorrowerNavBar
+        darkMode={darkMode}
+        toggleTheme={toggleTheme}
+        activePage = 'profile'
+        />
         {role === 'admin' &&(
             <Link to='/admin/dashboard'>BACK TO PAGE </Link>
         )}

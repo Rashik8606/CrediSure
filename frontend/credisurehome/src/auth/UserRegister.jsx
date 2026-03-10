@@ -18,7 +18,7 @@ function UserRegister() {
 
     const [darkMode, setDarkMode] = useState(()=>{
         const saved = localStorage.getItem('bp-theme')
-        return saved === saved ? 'dark':true
+        return saved ? saved === 'dark':true
     })
 
     const toggeleTheme = ()=>{
