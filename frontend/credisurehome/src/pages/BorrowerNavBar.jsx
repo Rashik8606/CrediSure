@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import '../css/borrowerNavBar.css'
 
+
 const BorrowerNavBar = ({ darkMode, toggleTheme, hasActiveLoan, activePage }) => {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -126,6 +127,7 @@ const BorrowerNavBar = ({ darkMode, toggleTheme, hasActiveLoan, activePage }) =>
             ← Logout
           </a>
         </div>
+       
       </nav>
     </>
   )

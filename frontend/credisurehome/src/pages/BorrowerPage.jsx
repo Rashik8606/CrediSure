@@ -5,6 +5,7 @@ import '../css/borrower-dashboard.css'
 import PageFooter from './PageFooter'
 import BorrowerNavBar from './BorrowerNavBar'
 import Carousel from './Carousel'
+import GradualBlur from './GradualBlur'
 
 /* ── STATUS COLOR HELPER ── */
 const getStatusClass = (status) => {
@@ -190,6 +191,35 @@ const BorrowerPage = () => {
         )}
 
       </div>
+
+      <section style={{position:'relative', height:'500px', overflowY:'auto', padding:'6rem 2rem'}}>
+
+  <div style={{maxWidth:'800px', margin:'0 auto'}}>
+    <h2>Borrower Tips</h2>
+
+    <p>Managing your loan responsibly helps maintain a healthy credit score.</p>
+    <p>Always try to pay your EMI before the due date to avoid penalties.</p>
+    <p>If you face financial difficulties contact support immediately.</p>
+    <p>Verified accounts receive faster loan approvals.</p>
+    <p>You can track your loan status directly from this dashboard.</p>
+    <p>Responsible repayment improves your loan eligibility.</p>
+    <p>More content...</p>
+    <p>More content...</p>
+    <p>More content...</p>
+  </div>
+
+  <GradualBlur
+    target="parent"
+    position="bottom"
+    height="7rem"
+    strength={2}
+    divCount={5}
+    curve="bezier"
+    exponential
+    opacity={1}
+  />
+
+</section>
 
       <PageFooter darkMode={darkMode} />
 
