@@ -5,7 +5,6 @@ import '../css/borrower-dashboard.css'
 import PageFooter from './PageFooter'
 import BorrowerNavBar from './BorrowerNavBar'
 import Carousel from './Carousel'
-import GradualBlur from './GradualBlur'
 
 /* ── STATUS COLOR HELPER ── */
 const getStatusClass = (status) => {
@@ -16,6 +15,58 @@ const getStatusClass = (status) => {
   if (s.includes('pend')) return 'pending'
   return 'default'
 }
+
+/* ── LOAN FEATURE CARDS DATA ──
+   Replace the imageUrl values with your own hosted image URLs.
+   Using Unsplash source URLs as placeholder images.
+*/
+const LOAN_FEATURES = [
+  {
+    title: 'Instant Approval',
+    subtitle: 'Get a decision within minutes. Our AI-powered system evaluates your application in real time with zero paperwork.',
+    badge: 'Fast Track',
+    stat: '< 5 min',
+    statLabel: 'avg. decision time',
+    accentColor: '#4f8ef7',
+    imageUrl: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80'
+  },
+  {
+    title: 'Low Interest Rates',
+    subtitle: 'Competitive rates starting from 8.5% p.a. tailored to your credit profile. No hidden fees, ever.',
+    badge: 'Best Rate',
+    stat: '8.5%',
+    statLabel: 'starting p.a.',
+    accentColor: '#22d3a0',
+    imageUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80'
+  },
+  {
+    title: 'Flexible Repayment',
+    subtitle: 'Choose your EMI schedule from 6 to 60 months. Prepay anytime without penalty charges.',
+    badge: 'Flexible',
+    stat: '60',
+    statLabel: 'months max tenure',
+    accentColor: '#f59e0b',
+    imageUrl: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&q=80'
+  },
+  {
+    title: 'Secure & Encrypted',
+    subtitle: 'Bank-grade 256-bit encryption protects every transaction. Your data stays private, always.',
+    badge: 'Bank-Grade',
+    stat: '256-bit',
+    statLabel: 'SSL encryption',
+    accentColor: '#a855f7',
+    imageUrl: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&q=80'
+  },
+  {
+    title: 'Zero Collateral',
+    subtitle: 'Unsecured personal loans up to ₹10L. No asset pledging required — just your credit history.',
+    badge: 'Unsecured',
+    stat: '₹10L',
+    statLabel: 'max loan amount',
+    accentColor: '#ef4444',
+    imageUrl: 'https://images.unsplash.com/photo-1565514158740-064f34bd6cfd?w=800&q=80'
+  }
+]
 
 const BorrowerPage = () => {
   const navigate = useNavigate()
@@ -32,10 +83,9 @@ const BorrowerPage = () => {
   const toggleTheme = () => {
     const next = !darkMode
     setDarkMode(next)
-    localStorage.setItem('bp-theme', next ? 'dark':'light')
+    localStorage.setItem('bp-theme', next ? 'dark' : 'light')
   }
 
-  
   useEffect(() => {
     API.get('/loans/borrower/active_loan/')
       .then((res) => {
@@ -73,7 +123,7 @@ const BorrowerPage = () => {
   return (
     <div className={`borrower-page ${darkMode ? 'dark' : 'light'}`}>
 
-      {/* ── NAVBAR — passes hasActiveLoan for Apply guard ── */}
+      {/* ── NAVBAR ── */}
       <BorrowerNavBar
         darkMode={darkMode}
         toggleTheme={toggleTheme}
@@ -191,35 +241,14 @@ const BorrowerPage = () => {
         )}
 
       </div>
+      {/* ── bp-container ends here ── */}
 
-      <section style={{position:'relative', height:'500px', overflowY:'auto', padding:'6rem 2rem'}}>
-
-  <div style={{maxWidth:'800px', margin:'0 auto'}}>
-    <h2>Borrower Tips</h2>
-
-    <p>Managing your loan responsibly helps maintain a healthy credit score.</p>
-    <p>Always try to pay your EMI before the due date to avoid penalties.</p>
-    <p>If you face financial difficulties contact support immediately.</p>
-    <p>Verified accounts receive faster loan approvals.</p>
-    <p>You can track your loan status directly from this dashboard.</p>
-    <p>Responsible repayment improves your loan eligibility.</p>
-    <p>More content...</p>
-    <p>More content...</p>
-    <p>More content...</p>
-  </div>
-
-  <GradualBlur
-    target="parent"
-    position="bottom"
-    height="7rem"
-    strength={2}
-    divCount={5}
-    curve="bezier"
-    exponential
-    opacity={1}
-  />
-
-</section>
+      {/*
+        ScrollStack is OUTSIDE bp-container with an explicit height.
+        Each card uses TiltCard which handles cursor-following 3D tilt
+        via onMouseMove — no library needed, pure JS.
+      */}
+     
 
       <PageFooter darkMode={darkMode} />
 
