@@ -7,7 +7,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView 
 from .serializer import MyTokensObtainPairSerializer , UserRegisterSerializer, ChangePasswordSerializer
 from rest_framework import status,generics,permissions
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny,IsAuthenticated
 # Create your views here.
 
 User = get_user_model()
@@ -81,3 +81,17 @@ class ChangePasswordView(generics.UpdateAPIView):
 
         return Response({'detail':'Password update successfully completed..'}, status=status.HTTP_200_OK)
     
+
+# BORROWER DETAILS VIEW
+class ProfileDetails(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        return Response({
+            'username':user.username,
+            'email':user.email,
+            'phone':user.phone if hasattr(user,'phone') else '',
+            'role':user.role,
+            'created_at':user.date_joined.strftime('%Y-%m-%d')
+        })
