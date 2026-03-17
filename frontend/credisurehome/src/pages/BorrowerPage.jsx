@@ -5,6 +5,7 @@ import '../css/borrower-dashboard.css'
 import PageFooter from './PageFooter'
 import BorrowerNavBar from './BorrowerNavBar'
 import Carousel from './Carousel'
+import ServiceSection from './ServiceCard'
 
 /* ── STATUS COLOR HELPER ── */
 const getStatusClass = (status) => {
@@ -241,6 +242,10 @@ const BorrowerPage = () => {
         )}
 
       </div>
+
+
+
+      <ServiceSection/>
       {/* ── bp-container ends here ── */}
 
       {/*
