@@ -1,46 +1,41 @@
 import { useEffect, useRef, useState } from "react"
 import '../css/serviceCard.css'
+import { FcAssistant } from "react-icons/fc";
+import { MdVerified } from "react-icons/md";
+import { SiQuicklook } from "react-icons/si";
 
 
 
 
 const SERVICES = [
     {
-        logo : 'CREDISURE 1',
+        logo : <SiQuicklook />,
         logoColor : '#FF9900',
-        title : 'Amazon UI Management',
+        title : 'Quick Loan Application',
         titleBlue : true,
         desc : 'Full-service Amazon management across EU5 and beyond. Listing optimization, A+ Content, PPC advertising, and Brand Store development.',
         link : '#'
 
     },
     {
-        logo : 'CREDISURE 2',
+        logo : <FcAssistant />,
         logoColor : '#FF9900',
-        title : 'Amazon UI Management',
+        title : 'Eligibility Assessment',
         titleBlue : true,
         desc : 'Full-service Amazon management across EU5 and beyond. Listing optimization, A+ Content, PPC advertising, and Brand Store development.',
         link : '#'
 
     },
     {
-        logo : 'CREDISURE 3',
+        logo : <MdVerified />,
         logoColor : '#FF9900',
-        title : 'Amazon UI Management',
+        title : 'Document Verification',
         titleBlue : true,
         desc : 'Full-service Amazon management across EU5 and beyond. Listing optimization, A+ Content, PPC advertising, and Brand Store development.',
         link : '#'
 
     },
-    // {
-    //     logo : 'CREDISURE 4',
-    //     logoColor : '#FF9900',
-    //     title : 'Amazon UI Management',
-    //     titleBlue : true,
-    //     desc : 'Full-service Amazon management across EU5 and beyond. Listing optimization, A+ Content, PPC advertising, and Brand Store development.',
-    //     link : '#'
-
-    // }
+    
 ]
 
 

@@ -134,7 +134,7 @@
   width: 50px;
   height: 50px;
   border-radius: 13px;
-  background: var(--bg);
+  background: var(--white);
   border: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -142,6 +142,11 @@
   flex-shrink: 0;
   font-size: 0.62rem;
   font-weight: 800;
+}
+
+.card-logo svg{
+  width: 28px;
+  height: 28px;
 }
 
 .card-title {
@@ -215,19 +220,15 @@
 
 
 .borrower-page.dark .services-section {
-  --bg: #0f172a;
-  --white: #1e293b;
+  --bg: #07070e;
+  --white: #0d0d1a;
   --text-primary: #f1f5f9;
   --text-secondary: #94a3b8;
   --border: rgba(255, 255, 255, 0.08);
+  --blue-hover-shadow: 0 12px 40px rgba(37, 99, 235, 0.25);
 }
 
-.borrower-page.light .services-section {
-  --bg: #f0f2f7;
-  --white: #ffffff;
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-}
+
 
 
 
