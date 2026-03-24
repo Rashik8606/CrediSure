@@ -13,7 +13,7 @@ const SERVICES = [
         logoColor : '#FF9900',
         title : 'Quick Loan Application',
         titleBlue : true,
-        desc : 'Full-service Amazon management across EU5 and beyond. Listing optimization, A+ Content, PPC advertising, and Brand Store development.',
+        desc : 'Apply for loans in minutes with a simple and fast process. Minimal documentation required. A fast, intuitive loan application experience built to get you approved without delays.',
         link : '#'
 
     },
@@ -22,7 +22,7 @@ const SERVICES = [
         logoColor : '#FF9900',
         title : 'Eligibility Assessment',
         titleBlue : true,
-        desc : 'Full-service Amazon management across EU5 and beyond. Listing optimization, A+ Content, PPC advertising, and Brand Store development.',
+        desc : 'Check your loan eligibility instantly with smart analysis and personalized offers.',
         link : '#'
 
     },
@@ -31,7 +31,7 @@ const SERVICES = [
         logoColor : '#FF9900',
         title : 'Document Verification',
         titleBlue : true,
-        desc : 'Full-service Amazon management across EU5 and beyond. Listing optimization, A+ Content, PPC advertising, and Brand Store development.',
+        desc : 'Secure document upload and quick verification for faster approvals.',
         link : '#'
 
     },

@@ -1,0 +1,172 @@
+/* ── STATS SECTION ── */
+.ss-section {
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  padding: 48px 5% 56px;
+  transition: background 0.3s ease;
+}
+
+.ss-section.dark  { background: #07070e; }
+.ss-section.light { background: #f1f5f9; }
+
+/* inner wrapper matches bp-container content width */
+.ss-inner {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* heading label — matches .bp-section-label style */
+.ss-heading {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.ss-section.dark  .ss-heading { color: #4b5563; }
+.ss-section.light .ss-heading { color: #9ca3af; }
+
+/* 3-column grid */
+.ss-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+/* ── CARD ── */
+.ss-card {
+  border-radius: 20px;
+  padding: 24px 22px 20px;
+  border: 1px solid;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+/* top accent stripe */
+.ss-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.ss-card--active-users::before  { background: linear-gradient(90deg, #1D9E75, #5DCAA5); }
+.ss-card--active-loans::before  { background: linear-gradient(90deg, #378ADD, #85B7EB); }
+.ss-card--applications::before  { background: linear-gradient(90deg, #7F77DD, #AFA9EC); }
+
+/* dark card */
+.ss-section.dark .ss-card {
+  background: linear-gradient(145deg, #0d0d1f, #0a0a18);
+  border-color: #1e1e35;
+}
+/* light card */
+.ss-section.light .ss-card {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+}
+
+/* ── ICON ── */
+.ss-icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+
+/* icon colors per theme */
+.ss-section.dark  .ss-icon--active-users { background: #0F6E5620; color: #1D9E75; }
+.ss-section.light .ss-icon--active-users { background: #E1F5EE;   color: #0F6E56; }
+.ss-section.dark  .ss-icon--active-loans { background: #185FA520; color: #378ADD; }
+.ss-section.light .ss-icon--active-loans { background: #E6F1FB;   color: #185FA5; }
+.ss-section.dark  .ss-icon--applications { background: #534AB720; color: #7F77DD; }
+.ss-section.light .ss-icon--applications { background: #EEEDFE;   color: #534AB7; }
+
+/* ── LABEL ── */
+.ss-label {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.ss-section.dark  .ss-label { color: #374151; }
+.ss-section.light .ss-label { color: #9ca3af; }
+
+/* ── VALUE ── */
+.ss-value {
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.1;
+  margin-bottom: 14px;
+  font-family: 'Syne', sans-serif;
+}
+.ss-section.dark  .ss-card--active-users .ss-value { color: #1D9E75; }
+.ss-section.dark  .ss-card--active-loans .ss-value { color: #378ADD; }
+.ss-section.dark  .ss-card--applications .ss-value { color: #7F77DD; }
+.ss-section.light .ss-card--active-users .ss-value { color: #0F6E56; }
+.ss-section.light .ss-card--active-loans .ss-value { color: #185FA5; }
+.ss-section.light .ss-card--applications .ss-value { color: #534AB7; }
+
+/* ── FOOTER ROW ── */
+.ss-footer-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ss-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 99px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.ss-badge--up   { background: #1D9E7520; color: #1D9E75; }
+.ss-badge--down { background: #ef444418; color: #ef4444; }
+
+.ss-footer {
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.ss-section.dark  .ss-footer { color: #374151; }
+.ss-section.light .ss-footer { color: #9ca3af; }
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════ */
+
+/* Tablet */
+@media (max-width: 768px) {
+  .ss-section { padding: 36px 4% 44px; }
+  .ss-value   { font-size: 28px; }
+}
+
+/* Mobile — stack to 2 cols then 1 */
+@media (max-width: 640px) {
+  .ss-section { padding: 28px 16px 36px; }
+  .ss-grid    { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .ss-card    { padding: 18px 16px 16px; }
+  .ss-value   { font-size: 26px; }
+
+  /* 3rd card spans full width on 2-col layout */
+  .ss-card--applications { grid-column: 1 / -1; }
+}
+
+/* Small mobile */
+@media (max-width: 380px) {
+  .ss-grid  { grid-template-columns: 1fr; }
+  .ss-card--applications { grid-column: auto; }
+  .ss-value { font-size: 30px; }
+}

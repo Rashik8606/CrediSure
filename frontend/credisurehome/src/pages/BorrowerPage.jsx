@@ -6,6 +6,7 @@ import PageFooter from './PageFooter'
 import BorrowerNavBar from './BorrowerNavBar'
 import Carousel from './Carousel'
 import ServiceSection from './ServiceCard'
+import StatsSection from './StatsSection'
 
 /* ── STATUS COLOR HELPER ── */
 const getStatusClass = (status) => {
@@ -253,6 +254,9 @@ const BorrowerPage = () => {
         Each card uses TiltCard which handles cursor-following 3D tilt
         via onMouseMove — no library needed, pure JS.
       */}
+
+      <StatsSection
+      darkMode={darkMode} />
      
 
       <PageFooter darkMode={darkMode} />
