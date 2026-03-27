@@ -12,6 +12,17 @@ const LoanRequestForm = () => {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
 
+  const [darkMode, setDarkMode] = useState(()=>{
+    const saved = localStorage.getItem('bp-theme')
+    return saved ? saved === 'dark':true
+  })
+
+  const toggleTheme = ()=>{
+    const next = !darkMode
+    setDarkMode(next)
+    localStorage.setItem('bp-theme',next ? 'dark':'light')
+  }
+
   useEffect(() => {
     API.get('/loans/borrower/active_loan/')
       .then(res => {
@@ -51,7 +62,7 @@ const LoanRequestForm = () => {
   }
 
   return (
-    <div className="loan-page">
+    <div className={`loan-page ${darkMode ? 'dark':'light'}` } >
       <div className="loan-card">
 
         {/* Header */}
