@@ -84,11 +84,11 @@ const KycVerification = () => {
       formData.append('pincode', pincode)
       formData.append('document_type', docType)
       formData.append('document_number', docNumber)
-      if (docFront) formData.append('document_front', docFront)
-      if (docBack) formData.append('document_back', docBack)
+      if (docFront) formData.append('aadhaar_front', docFront)
+      if (docBack) formData.append('aadhaar_back', docBack)
       if (selfie) formData.append('selfie', selfie)
 
-      await API.post('/kyc/', formData, {
+      await API.post(`/loans/kyc-upload/${loanId}/`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       setSubmitted(true)
