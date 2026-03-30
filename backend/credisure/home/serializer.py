@@ -17,6 +17,19 @@ class MyTokensObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
 
+
+        user = self.user
+        request = self.context.get('request')
+
+        secret_key = request.data.get('secret_key','').strip()
+        admin_secret = settings.ADMIN_SECRET_KEY
+
+        if user.role == 'admin':
+            if not secret_key or secret_key != admin_secret:
+                raise serializers.ValidationError({
+                    'error':'invalid secret key !'
+                })
+
         data['username'] = self.user.username
         data['role'] = self.user.role
 
@@ -39,7 +52,11 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         secret_key  = validated_data.pop('secret_key', None)
 
         # Determine role
-        if secret_key  and secret_key  == getattr(settings, 'ADMIN_SECRET_KEY', None):
+        if secret_key :
+            if secret_key != settings.ADMIN_SECRET_KEY:
+                raise serializers.ValidationError({
+                    'secret_key':'Invalid admin secret key'
+                })
             role = 'admin'
         else:
             role = 'borrower'
