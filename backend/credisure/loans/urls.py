@@ -4,7 +4,7 @@ from .views import( LoanCreateListView,
                     LoanAdminListView,
                     LoanKycUploadView,
                     LoanViewSet,NextEmiView,
-                    LoanEmiListView,LoanActiveLoan)
+                    LoanEmiListView,LoanActiveLoan, get_emi_details,mark_emi_paid)
 from rest_framework.routers import DefaultRouter
 
 
@@ -24,4 +24,9 @@ urlpatterns = [
     path('<int:loan_id>/emi/', LoanViewSet.as_view({'get': 'emis'}), name='loan-emi'),
     path('<int:loan_id>/pay_emi/',LoanViewSet.as_view({'post':'pay_emi'}),name='loan-pay-emi'),
     path('<int:loan_id>/emi-schedule/',LoanEmiListView.as_view(),name='loan-emi-schedule'),
+
+
+
+    path('emi/<int:emi_id>/',get_emi_details),
+    path('emi/<int:emi_id>/pay',mark_emi_paid),
 ]

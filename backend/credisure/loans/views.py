@@ -203,7 +203,7 @@ class LoanViewSet(viewsets.ModelViewSet):
         loan.save(update_fields=['status','kyc_status'])
         return Response({'status':'approved','kyc_status':'APPROVED'})
 
-    @action(detail=True, method=['post'])
+    @action(detail=True, methods=['post'])
     def reject(self, request, pk=None):
         loan = self.get_object()
         loan.status = 'rejected'
@@ -255,3 +255,42 @@ class NextEmiView(APIView):
             'amount':emi.emi_amount,
             'due_date':emi.due_date
         })
+    
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+
+
+@api_view(['GET'])
+def get_emi_details(request, emi_id):
+    emi = get_object_or_404(EmiSchedule, id=emi_id)
+
+    return Response({
+        'id': emi.id,
+        'loan_id': emi.loan.id,
+        'emi_amount': emi.emi_amount,
+        'paid': emi.paid,
+        'user_id': emi.loan.borrower.id
+    })
+
+
+
+@api_view(['POST'])
+def mark_emi_paid(request, emi_id):
+    emi = get_object_or_404(EmiSchedule, id=emi_id)
+
+    if emi.paid:
+        return Response({'error': 'Already paid'}, status=400)
+
+    emi.paid = True
+    emi.paid_at = timezone.now()
+    emi.save()
+
+    # check loan completion
+    loan = emi.loan
+    if not loan.emis.filter(paid=False).exists():
+        loan.status = 'completed'
+        loan.save()
+
+    return Response({'message': 'EMI marked as paid'})

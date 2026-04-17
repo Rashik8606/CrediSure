@@ -1,12 +1,12 @@
 from django.db import models
-from loans.models import loanRequestForm, EmiSchedule
 # Create your models here.
 
 
 
 class EmiPayment(models.Model):
-    loan = models.ForeignKey(loanRequestForm, on_delete=models.CASCADE, default='payments')
-    emi = models.ForeignKey(EmiSchedule, on_delete=models.CASCADE, default='payments')
+    loan_id = models.IntegerField()
+    emi_id = models.IntegerField()
+    user_id = models.IntegerField()
 
     order_id = models.CharField(max_length=100)
     payment_id = models.CharField(max_length=100, null=True, blank=True)
@@ -27,4 +27,4 @@ class EmiPayment(models.Model):
 
 
     def __str__(self):
-        return f'{self.loan.borrower} - EMI {self.emi.month_number}'
+        return f'Loan {self.loan_id} - EMI {self.emi_id}'

@@ -8,8 +8,8 @@ from rest_framework.response import Response
 from rest_framework import status
 # Create your views here.
 
-from .models import EmiSchedule, EmiPayment
-
+from .models import  EmiPayment
+import requests
 
 
 class CreateEmiPaymentView(APIView):
@@ -19,45 +19,47 @@ class CreateEmiPaymentView(APIView):
         emi_id = request.data.get('emi_id')
         
         try:
-            emi = EmiSchedule.objects.get(id=emi_id, paid = False)
-        except EmiSchedule.DoesNotExist:
+            res = requests.get(f'http://127.0.0.1:8000/api/emi/{emi_id}/')
+            emi_data = res.json()
+        except:
+            return Response(
+                {'error':'EMI Service Error'},status=500
+            )
+        if emi_data.get('paid') :
             return Response(
                 {'error':'Invalid or Already Paid EMI'},
-                status=status.HTTP_400_BAD_REQUEST
+                status=400
             )
+        if emi_data.get('user_id') != request.user.id:
+            return Response({'error':'Unauthrized '},status=403)
         
-        if emi.loan.borrower != request.user:
-            return Response(
-                {'error':'Unauthrized User'},
-                status=status.HTTP_403_FORBIDDEN
-            )
-        if EmiPayment.objects.filter(emi=emi, status='success').exists():
-            return Response(
-                {'error':'EMI Already Paid'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        amount = emi_data.get('emi_amount')
+
+        if not amount :
+            return Response({'error':'Invalid AMI Amount'},status=400)
         
         client = razorpay.Client(
             auth=(settings.RAZORPAY_KEY_ID , settings.RAZORPAY_KEY_SECRET)
         )
-        amount_paise = int(emi.emi_amount * 100)
+        
 
         order = client.order.create({
-            'amount':amount_paise,
+            'amount':int(amount*100),
             'currency':'INR',
             'payment_capture':1
         })
 
         EmiPayment.objects.create(
-            loan = emi.loan,
-            emi = emi,
+            loan_id = emi_data.get('loan_id'),
+            emi_id = emi_id,
+            user_id = request.user.id,
             order_id = order['id'],
-            amount = emi.emi_amount
+            amount = amount
         )
 
         return Response({
             'order_id':order['id'],
-            'amount':amount_paise,
+            'amount':int(amount*100),
             'key':settings.RAZORPAY_KEY_ID
         })
 
@@ -82,7 +84,7 @@ class VerifyEmiPaymentsView(APIView):
 
             payment = EmiPayment.objects.get(order_id = data['razorpay_order_id'])
 
-            if payment.loan.borrower != request.user:
+            if payment.user_id != request.user.id:
                 return Response(
                     {
                         'error':'Unauthrized'
@@ -95,11 +97,11 @@ class VerifyEmiPaymentsView(APIView):
             payment.paid_at = timezone.now()
             payment.save()
 
-
-            emi = payment.emi
-            emi.paid = True
-            emi.paid_at = timezone.now()
-            emi.save()
+            res = requests.post(f'http://127.0.0.1:8000/api/emi/{payment.emi_id}/pay/',
+                         json={'payment_id':payment.payment_id})
+            
+            if res.status_code != 200:
+                return Response({'error':'Failed to Update EMI '}, status=500)
 
             return Response({'message':'EMI Payment Successfully Completed'})
         
