@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import API from '../api/axios'
+import API1 from '../api/payments_axios'
 import '../css/payment-page.css'
 
 
@@ -54,7 +55,7 @@ const PaymentPage = () => {
   const payNow = async () => {
     setProcessing(true)
     try {
-      const res = await API.post('/payments/emi/create-payment/', {
+      const res = await API1.post('/emi/create-payment/', {
         emi_id: nextEmi.emi_id,
       })
 
@@ -66,7 +67,7 @@ const PaymentPage = () => {
         name:        'Loan EMI Payment',
         description: 'EMI Repayment',
         handler: async (response) => {
-          await API.post('/emi/verify-payment/', {
+          await API1.post('/emi/verify-payment/', {
             razorpay_order_id:   response.razorpay_order_id,
             razorpay_payment_id: response.razorpay_payment_id,
             razorpay_signature:  response.razorpay_signature,
