@@ -14,7 +14,7 @@ User = get_user_model()
 # Login Or register
 class RegisterView(APIView):
     authentication_classes = []
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     def post(self, request):
         print("Incoming request data:", request.data)  # <--- DEBUG
         serializer = UserRegisterSerializer(data=request.data)
