@@ -8,7 +8,6 @@ import Carousel from './Carousel'
 import ServiceSection from './ServiceCard'
 import StatsSection from './StatsSection'
 
-/* ── STATUS COLOR HELPER ── */
 const getStatusClass = (status) => {
   if (!status) return 'default'
   const s = status.toLowerCase()
@@ -17,58 +16,6 @@ const getStatusClass = (status) => {
   if (s.includes('pend')) return 'pending'
   return 'default'
 }
-
-/* ── LOAN FEATURE CARDS DATA ──
-   Replace the imageUrl values with your own hosted image URLs.
-   Using Unsplash source URLs as placeholder images.
-*/
-const LOAN_FEATURES = [
-  {
-    title: 'Instant Approval',
-    subtitle: 'Get a decision within minutes. Our AI-powered system evaluates your application in real time with zero paperwork.',
-    badge: 'Fast Track',
-    stat: '< 5 min',
-    statLabel: 'avg. decision time',
-    accentColor: '#4f8ef7',
-    imageUrl: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80'
-  },
-  {
-    title: 'Low Interest Rates',
-    subtitle: 'Competitive rates starting from 8.5% p.a. tailored to your credit profile. No hidden fees, ever.',
-    badge: 'Best Rate',
-    stat: '8.5%',
-    statLabel: 'starting p.a.',
-    accentColor: '#22d3a0',
-    imageUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80'
-  },
-  {
-    title: 'Flexible Repayment',
-    subtitle: 'Choose your EMI schedule from 6 to 60 months. Prepay anytime without penalty charges.',
-    badge: 'Flexible',
-    stat: '60',
-    statLabel: 'months max tenure',
-    accentColor: '#f59e0b',
-    imageUrl: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&q=80'
-  },
-  {
-    title: 'Secure & Encrypted',
-    subtitle: 'Bank-grade 256-bit encryption protects every transaction. Your data stays private, always.',
-    badge: 'Bank-Grade',
-    stat: '256-bit',
-    statLabel: 'SSL encryption',
-    accentColor: '#a855f7',
-    imageUrl: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&q=80'
-  },
-  {
-    title: 'Zero Collateral',
-    subtitle: 'Unsecured personal loans up to ₹10L. No asset pledging required — just your credit history.',
-    badge: 'Unsecured',
-    stat: '₹10L',
-    statLabel: 'max loan amount',
-    accentColor: '#ef4444',
-    imageUrl: 'https://images.unsplash.com/photo-1565514158740-064f34bd6cfd?w=800&q=80'
-  }
-]
 
 const BorrowerPage = () => {
   const navigate = useNavigate()
@@ -91,15 +38,20 @@ const BorrowerPage = () => {
   useEffect(() => {
     API.get('/loans/borrower/active_loan/')
       .then((res) => {
-        setLoanInfo(res.data)
+        console.log('API RESPONSE:', res.data) // ✅ DEBUG
+
+        setLoanInfo(res.data || null)
         setLoading(false)
         setTimeout(() => setMounted(true), 50)
       })
       .catch((err) => {
+        console.error(err)
+
         if (err.response?.status === 401) {
-          localStorage.removeItem('access_token')
+          localStorage.removeItem('access') // ✅ FIXED
           navigate('/unauthorized')
         } else {
+          setLoanInfo(null)
           setLoading(false)
           setTimeout(() => setMounted(true), 50)
         }
@@ -125,7 +77,7 @@ const BorrowerPage = () => {
   return (
     <div className={`borrower-page ${darkMode ? 'dark' : 'light'}`}>
 
-      {/* ── NAVBAR ── */}
+      {/* NAVBAR */}
       <BorrowerNavBar
         darkMode={darkMode}
         toggleTheme={toggleTheme}
@@ -133,15 +85,14 @@ const BorrowerPage = () => {
         activePage='dashboard'
       />
 
-      {/* ── CAROUSEL ── */}
+      {/* CAROUSEL */}
       <div className="bp-carousel-full">
         <Carousel autoplay autoplayDelay={3500} pauseOnHover loop />
       </div>
 
-      {/* ── MAIN CONTENT ── */}
+      {/* MAIN */}
       <div className={`bp-container ${mounted ? 'mounted' : ''}`}>
 
-        {/* ── PORTAL HEADER ── */}
         <div className="bp-portal-header">
           <div className="bp-logo-wrap">
             <div className="bp-logo-icon">💳</div>
@@ -154,40 +105,41 @@ const BorrowerPage = () => {
 
         <div className="bp-divider" />
 
-        {/* ── LOAN DETAILS ── */}
-        {hasActiveLoan && !isApprovedLoan ? (
+        {/* ✅ MAIN LOGIC FIXED */}
+
+        {!loanInfo ? (
+
+          <div className="bp-empty-state">
+            <div className="bp-empty-icon">📭</div>
+            <p className="bp-empty-text">No loan data found</p>
+            <p className="bp-empty-subtext">Please contact support.</p>
+          </div>
+
+        ) : !hasActiveLoan ? (
+
+          <div className="bp-fade-up">
+            <p className="bp-section-label">🎉 All Loans Cleared</p>
+            <div className="bp-apply-card">
+              <h2>No Pending EMI</h2>
+              <p>Your loan is fully paid. You can apply for a new loan.</p>
+              <a href="/loan-request-form" className="bp-apply-btn">
+                Apply for Loan →
+              </a>
+            </div>
+          </div>
+
+        ) : hasActiveLoan && !isApprovedLoan ? (
 
           <div className="bp-fade-up">
             <p className="bp-section-label">📋 Active Loan</p>
             <div className="bp-active-card">
               <div className="bp-active-card-top-bar" />
               <div className="bp-active-card-body">
-                <div className="bp-active-card-header">
-                  <div>
-                    <h2 className="bp-loan-title">Loan Under Process</h2>
-                    <p className="bp-loan-subtitle">Your application is being reviewed</p>
-                  </div>
-                  <div className={`bp-status-badge ${statusClass}`}>
-                    <span className={`bp-status-dot ${statusClass}`} />
-                    {loanInfo.status}
-                  </div>
-                </div>
-                <div className="bp-loan-stats">
-                  <div className="bp-stat-box">
-                    <p className="bp-stat-label">Loan Amount</p>
-                    <p className="bp-stat-value">₹{Number(loanInfo.amount).toLocaleString('en-IN')}</p>
-                  </div>
-                  <div className="bp-stat-divider" />
-                  <div className="bp-stat-box">
-                    <p className="bp-stat-label">Status</p>
-                    <p className={`bp-stat-value ${statusClass}`}>{loanInfo.status}</p>
-                  </div>
-                </div>
-                <div className="bp-info-box">
-                  <span className="bp-info-icon">ℹ️</span>
-                  <span className="bp-info-text">
-                    Our team is reviewing your application. You will be notified once a decision is made.
-                  </span>
+                <h2 className="bp-loan-title">Loan Under Process</h2>
+                <p className="bp-loan-subtitle">Your application is being reviewed</p>
+
+                <div className={`bp-status-badge ${statusClass}`}>
+                  {loanInfo.status}
                 </div>
               </div>
             </div>
@@ -198,67 +150,33 @@ const BorrowerPage = () => {
           <div className="bp-fade-up">
             <p className="bp-section-label">✅ Approved Loan</p>
             <div className="bp-active-card approved">
-              <div className="bp-active-card-top-bar approved" />
               <div className="bp-active-card-body">
                 <h2 className="bp-loan-title">Loan Approved 🎉</h2>
-                <p className="bp-loan-subtitle">Congratulations! Your loan has been approved.</p>
-                <div className="bp-loan-stats">
-                  <div className="bp-stat-box">
-                    <p className="bp-stat-label">Approved Amount</p>
-                    <p className="bp-stat-value approved">₹{Number(loanInfo.amount).toLocaleString('en-IN')}</p>
-                  </div>
-                  <div className="bp-stat-divider" />
-                  <div className="bp-stat-box">
-                    <p className="bp-stat-label">Loan Type</p>
-                    <a href='/payments' className="bp-repay-link">REPAY →</a>
-                    <p className="bp-stat-value">{loanInfo.loan_type || 'Standard'}</p>
-                  </div>
-                </div>
-                <div className="bp-info-box success">
-                  <span className="bp-info-icon">✅</span>
-                  <span className="bp-info-text">Our team will contact you for disbursement details.</span>
-                </div>
+
+                <p className="bp-loan-subtitle">
+                  You can now proceed with EMI payment
+                </p>
+
+                <a href="/payments" className="bp-repay-link">
+                  Go to Payment →
+                </a>
               </div>
-            </div>
-          </div>
-
-        ) : loanInfo ? (
-
-          <div className="bp-fade-up">
-            <p className="bp-section-label">🚀 Get Started</p>
-            <div className="bp-apply-card">
-              <h2>No Active Loan</h2>
-              <p>You are eligible to apply for a loan.</p>
-              <a href="/loan-request-form" className="bp-apply-btn">Apply for Loan →</a>
             </div>
           </div>
 
         ) : (
 
           <div className="bp-empty-state">
-            <div className="bp-empty-icon">📭</div>
-            <p className="bp-empty-text">No loan information available</p>
-            <p className="bp-empty-subtext">Please contact support if this seems incorrect.</p>
+            <div className="bp-empty-icon">⚠️</div>
+            <p className="bp-empty-text">Unexpected state</p>
           </div>
+
         )}
 
       </div>
 
-
-
-      <ServiceSection/>
-      {/* ── bp-container ends here ── */}
-
-      {/*
-        ScrollStack is OUTSIDE bp-container with an explicit height.
-        Each card uses TiltCard which handles cursor-following 3D tilt
-        via onMouseMove — no library needed, pure JS.
-      */}
-
-      <StatsSection
-      darkMode={darkMode} />
-     
-
+      <ServiceSection />
+      <StatsSection darkMode={darkMode} />
       <PageFooter darkMode={darkMode} />
 
     </div>
