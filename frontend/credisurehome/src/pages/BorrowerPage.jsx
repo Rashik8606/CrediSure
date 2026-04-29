@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import API from '../api/axios'
+import API from '../api/user-service_axios'
 import '../css/borrower-dashboard.css'
 import PageFooter from './PageFooter'
 import BorrowerNavBar from './BorrowerNavBar'

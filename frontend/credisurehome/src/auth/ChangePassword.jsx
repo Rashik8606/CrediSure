@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import API from '../api/axios';
+import API from '../api/user-service_axios';
 import { Link } from 'react-router-dom';
 import { getUserRole } from '../utils/auth';
 import BorrowerNavBar from '../pages/BorrowerNavBar';

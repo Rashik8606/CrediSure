@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'payments',
     'rest_framework',
-    'corsheaders'
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -93,7 +93,7 @@ WSGI_APPLICATION = 'payment_service.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'credisure',
+        'NAME': 'payment_service',
         'USER': 'root',
         'PASSWORD': 'Rashik@123',
         'HOST': 'localhost',

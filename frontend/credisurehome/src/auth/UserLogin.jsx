@@ -1,33 +1,118 @@
-describe('FULL EMI FLOW WITH UI', () => {
+import { useState } from "react";
+import API from "../api/user-service_axios";
+import { Link, useNavigate } from 'react-router-dom'
+import '../css/login.css'
 
-  it('Complete Flow + UI', () => {
 
-    let access = ''
-    let refresh = ''
 
-    // 1. Login
-    cy.request('POST', 'http://127.0.0.1:8000/api/token/', {
-      username: 'jomol',
-      password: 'rashik@123'
-    }).then((res) => {
+function Login() {
+    const navigate = useNavigate();
 
-      access = res.body.access
-      refresh = res.body.refresh
+    const [ role, setRole ] = useState('borrower')
+    const [ username, setUserName ] = useState('')
+    const [ password, setPassword ] = useState('')
+    const [ secretKey, setSecretKey ] = useState('')
+    const [ error, setError ] = useState('')
 
-      // 2. Inject correct tokens
-      cy.visit('http://localhost:3000/payments', {
-        onBeforeLoad(win) {
-          win.localStorage.setItem('access_token', access)
-          win.localStorage.setItem('refresh_token', refresh)
-          win.localStorage.setItem('role', 'borrower') // 👈 IMPORTANT
-        }
-      })
 
+    const [darkMode, setDarkMode]= useState(()=>{
+        const saved = localStorage.getItem('bp-theme')
+        return saved ? saved === 'dark' : true
     })
 
-    // 3. Verify UI
-    cy.contains('Payment Gateway')
+    const toggleTheme = () =>{
+        const next = !darkMode
+        setDarkMode(next)
+        localStorage.setItem('bp-theme', next ? 'dark': 'light')
+    }
 
-  })
 
-})
+    const handleLogin = async (e) =>{
+        e.preventDefault();
+
+        if (role === 'admin' && !secretKey.trim()){
+            alert('Please Enter Your Secret Key ...')
+            return;
+        }
+
+        try{
+            const payload = {
+                username,
+                password,
+            }
+            if (role === 'admin'){
+                payload.secret_key = secretKey
+            }
+
+            const res = await API.post('token/',payload)
+
+            const backendRole = res.data.role;
+
+            if(backendRole !== role){   
+                alert(
+                    backendRole ==='admin'
+                    ?'You Are an admin..! Please Select Admin and enter your secret key '
+                    :'You Are a Borrower..! Please Select Borrower. You Can not Vist Admin page'
+                )
+                return
+            }
+
+            localStorage.setItem('access_token', res.data.access);
+            localStorage.setItem('refresh_token',res.data.refresh);
+            localStorage.setItem('role',backendRole)
+
+            if ( backendRole === 'admin'){
+                navigate('/admin/dashboard');
+            }else{
+                navigate('/borrower/dashboard')
+            }
+        }catch (err){
+            console.log(err.response?.data)
+            setError(err.response?.data.error ||
+                err.response?.data.detail||
+                'Invalid credentials or secret key')
+        }
+    }
+
+    return (
+        <div className={`login-container ${darkMode ? 'dark':'light'}`}>
+            <button className="login-theme-btn" onClick={toggleTheme} >
+                {darkMode ? '☀️  Light':'🌙  dark'}
+            </button>
+            <form className="login-card" onSubmit={handleLogin}>
+                <h2>Loan Management Portal</h2>
+                <p className="subtitle">Secure access to your financial journey</p>
+                {error && <div className="error">{error}</div>}
+                <label className="label">Login As</label>
+                {/* ROLE SELECT */}
+
+                <select className="input" value={role} onChange={(e)=> setRole(e.target.value)}>
+                    <option value='borrower'>Borrower</option>
+                    <option value='admin'>Administrator</option>
+                </select>
+
+                 <label className="label">Email / Username</label>
+                <input className="input" type="text" placeholder="ENTER USERNAME.." onChange={(e)=> setUserName(e.target.value)} required/>
+
+                 <label className="label">PASSWORD</label>
+                <input className="input" type="password" placeholder="ENTER PASSWORD" onChange={(e)=> setPassword(e.target.value)} required/>
+
+                {role === 'admin' && (
+                    <>
+                    <label className="label">Admin Secret Key</label>
+                    <input className="input" type="password" placeholder="ENTER SECRECT KEY" onChange={(e)=> setSecretKey(e.target.value)} required/>
+                 </>
+                )}
+               
+
+                <button className="login-btn" type="submit">Access Dashboard</button>
+
+                <p className="register-link">Don't have an account ?
+                    <Link to='/register'>Register</Link>
+                </p>
+            </form>
+        </div>
+    )
+}
+
+export default Login;

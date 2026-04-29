@@ -13,7 +13,7 @@ from rest_framework.decorators import action
 from django.utils import timezone
 from rest_framework.parsers import MultiPartParser,FormParser
 from rest_framework.exceptions import ValidationError
-
+import requests
 
 
 # Create your views here.
@@ -40,12 +40,34 @@ class LoanCreateListView(generics.ListCreateAPIView):
         return loanRequestForm.objects.filter(borrower=self.request.user)
     
     def create(self, request, *args, **kwargs):
+        token = requests.headers.get('Authorization')
+        try:
+            response = requests.get(
+                'http://127.0.0.1:8002/api/profile',
+                headers={'Authorization':token}
+            )
+        except Exception:
+            return Response({'user':'User service not reacheble'},status=500)
+        
+        if response.status_code != 200:
+            return Response({'error':'Invalid user'},status=401)
+        
+        user_data = response.json()
+
+        if float(user_data.get('salary',0)) < 10000:
+            return Response({
+                'error':'Salary Must be at least 10,000 to apply for loan'
+            },status=403)
+        
         existing_loan = loanRequestForm.objects.filter(
             borrower = request.user,
             status__in = ['pending','approved','under_process']
         ).exists()
+
+
         if existing_loan:
             raise ValidationError({'detail':'You have already a loan under process'})
+        
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         loan = serializer.save(borrower=self.request.user)

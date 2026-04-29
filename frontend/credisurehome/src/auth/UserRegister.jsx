@@ -1,5 +1,5 @@
 import { useState } from "react";
-import API from "../api/axios";
+import API from "../api/user-service_axios";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import '../css/login.css'
@@ -13,6 +13,7 @@ function UserRegister() {
     const [password, setPassword ] = useState('')
     const [number, setNumber ] = useState('')
     const [error, setError ] = useState('')
+    const [salary, setSalary] = useState('')
     const [ secretKey, setSecretKey ] = useState('')
 
 
@@ -36,6 +37,7 @@ function UserRegister() {
                 email,
                 password,
                 phone_number : number,
+                salary,
                 secret_key : role === 'admin' ? secretKey:'',
                 
             })
@@ -81,6 +83,10 @@ function UserRegister() {
 
                 <label className="label">Phone Number</label>
                 <input className="input" type="number" placeholder="Enter Your Number" onChange={(e)=> setNumber(e.target.value)} required/>
+
+
+                <label className="label">Monthly Salary</label>
+                <input className="input" type="number" placeholder="Enter Your Monthly Salary" onChange={(e)=>{setSalary(e.target.value)}} required/>
 
                 <label className="label"></label>
                 <select className="input" value={role} onChange={(e) => setRole(e.target.value)}>

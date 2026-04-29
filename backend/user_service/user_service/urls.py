@@ -1,5 +1,5 @@
 """
-URL configuration for credisure project.
+URL configuration for user_service project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.2/topics/http/urls/
@@ -19,15 +19,10 @@ from django.urls import path,include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from django.http import JsonResponse
 
-
-
 urlpatterns = [
     path('admin/', admin.site.urls),
-    
-    # path('api/token/refresh/',TokenRefreshView.as_view(),name='token_refresh'),
+    path('api/token/refresh/',TokenRefreshView.as_view(),name='token_refresh'),
     # path('api/loans/',include('loans.urls')),
     # path('api/payments/',include('paymentgateway.urls')),
-    path('',include('home.urls')),
-    
+    path('',include('user_auth.urls')),
 ]
-    

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import API from '../api/axios'
+import API from '../api/user-service_axios'
 import '../css/admin-dashboard.css'
 import PageFooter from './PageFooter'
 import PageNavBar from './PageNavBar'
