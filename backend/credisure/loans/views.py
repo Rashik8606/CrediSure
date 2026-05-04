@@ -40,10 +40,10 @@ class LoanCreateListView(generics.ListCreateAPIView):
         return loanRequestForm.objects.filter(borrower=self.request.user)
     
     def create(self, request, *args, **kwargs):
-        token = requests.headers.get('Authorization')
+        token = request.headers.get('Authorization')
         try:
             response = requests.get(
-                'http://127.0.0.1:8002/api/profile',
+                'http://127.0.0.1:8002/api/profile/',
                 headers={'Authorization':token}
             )
         except Exception:
@@ -59,8 +59,9 @@ class LoanCreateListView(generics.ListCreateAPIView):
                 'error':'Salary Must be at least 10,000 to apply for loan'
             },status=403)
         
+        username = user_data.get('username')
         existing_loan = loanRequestForm.objects.filter(
-            borrower = request.user,
+            borrower_username = username,
             status__in = ['pending','approved','under_process']
         ).exists()
 
@@ -70,7 +71,7 @@ class LoanCreateListView(generics.ListCreateAPIView):
         
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        loan = serializer.save(borrower=self.request.user)
+        loan = serializer.save()
 
 
         ''' SENDING EMAIL LOGIC '''
