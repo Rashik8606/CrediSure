@@ -37,7 +37,7 @@ function UserRegister() {
                 email,
                 password,
                 phone_number : number,
-                salary,
+                salary:Number(salary),
                 secret_key : role === 'admin' ? secretKey:'',
                 
             })
