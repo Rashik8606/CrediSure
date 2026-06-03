@@ -40,19 +40,24 @@ class LoanCreateListView(generics.ListCreateAPIView):
         return loanRequestForm.objects.filter(borrower=self.request.user)
     
     def create(self, request, *args, **kwargs):
+        print("REQUEST USER:", request.user)
         token = request.headers.get('Authorization')
         try:
             response = requests.get(
                 'http://127.0.0.1:8002/api/profile/',
                 headers={'Authorization':token}
             )
-        except Exception:
+        except Exception as e:
+            print("PROFILE ERROR:", e)
             return Response({'user':'User service not reacheble'},status=500)
+        
+        print("PROFILE STATUS:", response.status_code)
         
         if response.status_code != 200:
             return Response({'error':'Invalid user'},status=401)
         
         user_data = response.json()
+        print("PROFILE DATA:", user_data)
 
         if float(user_data.get('salary',0)) < 10000:
             return Response({
@@ -61,8 +66,8 @@ class LoanCreateListView(generics.ListCreateAPIView):
         
         username = user_data.get('username')
         existing_loan = loanRequestForm.objects.filter(
-            borrower_username = username,
-            status__in = ['pending','approved','under_process']
+            borrower = request.user,
+            status__in = ['pending','approved']
         ).exists()
 
 
@@ -71,7 +76,7 @@ class LoanCreateListView(generics.ListCreateAPIView):
         
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        loan = serializer.save()
+        loan = serializer.save(borrower = request.user)
 
 
         ''' SENDING EMAIL LOGIC '''
@@ -100,9 +105,12 @@ class LoanCreateListView(generics.ListCreateAPIView):
         return Response({'id': loan.id}, status=status.HTTP_201_CREATED)
     
 class LoanActiveLoan(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        print("USER:", request.user)
+        print("AUTH:", request.auth)
+
         loan = loanRequestForm.objects.filter(
             borrower = request.user
         ).exclude(status = 'completed').order_by('-id').first()
@@ -222,7 +230,7 @@ class LoanViewSet(viewsets.ModelViewSet):
                 {'error':'KYC must be submitted before approval'},status=400
             )
         loan.status = 'approved'
-        loan.kyc_status = 'APPROVED'
+        loan.kyc_status = 'VERIFIED'
         loan.save(update_fields=['status','kyc_status'])
         return Response({'status':'approved','kyc_status':'APPROVED'})
 

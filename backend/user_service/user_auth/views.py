@@ -94,7 +94,7 @@ class ProfileDetails(APIView):
         return Response({
             'username':user.username,
             'email':user.email,
-            'phone':user.phone if hasattr(user,'phone') else '',
+            'phone_number':user.phone_number if hasattr(user,'phone_number') else '',
             'role':user.role,
             'salary':user.salary,
             'created_at':user.date_joined.strftime('%Y-%m-%d')

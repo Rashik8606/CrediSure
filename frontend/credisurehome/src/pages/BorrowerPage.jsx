@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import API from '../api/user-service_axios'
+import API from '../api/axios'
 import '../css/borrower-dashboard.css'
 import PageFooter from './PageFooter'
 import BorrowerNavBar from './BorrowerNavBar'
@@ -36,7 +36,7 @@ const BorrowerPage = () => {
   }
 
   useEffect(() => {
-    API.get('/loans/borrower/active_loan/')
+    API.get('loans/borrower/active_loan/')
       .then((res) => {
         console.log('API RESPONSE:', res.data) // ✅ DEBUG
 
@@ -48,7 +48,7 @@ const BorrowerPage = () => {
         console.error(err)
 
         if (err.response?.status === 401) {
-          localStorage.removeItem('access') // ✅ FIXED
+          localStorage.removeItem('access_token') // ✅ FIXED
           navigate('/unauthorized')
         } else {
           setLoanInfo(null)

@@ -23,11 +23,11 @@ from django.http import JsonResponse
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    
-    # path('api/token/refresh/',TokenRefreshView.as_view(),name='token_refresh'),
-    # path('api/loans/',include('loans.urls')),
-    # path('api/payments/',include('paymentgateway.urls')),
     path('',include('home.urls')),
+    path('api/token/',TokenObtainPairView.as_view(),name='token'),
+    path('api/token/refresh/',TokenRefreshView.as_view(),name='token_refresh'),
+    # path('api/payments/',include('paymentgateway.urls')),
+    path('api/loans/',include('loans.urls'))
     
 ]
     

@@ -13,8 +13,8 @@ import requests
 
 
 class CreateEmiPaymentView(APIView):
-    permission_classes = [AllowAny]
-    authentication_classes = []
+    permission_classes = [IsAuthenticated]
+    
 
     def post(self, request):
         emi_id = request.data.get('emi_id')
@@ -64,7 +64,7 @@ class CreateEmiPaymentView(APIView):
         EmiPayment.objects.create(
             loan_id=emi_data.get('loan_id'),
             emi_id=emi_id,
-            user_id=emi_data.get('user_id'),  # 👈 use from API
+            user_id=emi_data.get('user_id'),  
             order_id=order['id'],
             amount=amount
         )

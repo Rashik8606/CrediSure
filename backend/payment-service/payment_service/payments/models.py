@@ -1,4 +1,6 @@
 from django.db import models
+from django.conf import settings
+
 # Create your models here.
 
 
@@ -6,7 +8,7 @@ from django.db import models
 class EmiPayment(models.Model):
     loan_id = models.IntegerField()
     emi_id = models.IntegerField()
-    user_id = models.IntegerField()
+    user_id = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 
     order_id = models.CharField(max_length=100)
     payment_id = models.CharField(max_length=100, null=True, blank=True)
