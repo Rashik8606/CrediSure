@@ -2,7 +2,7 @@ from django.shortcuts import render
 from .models import loanRequestForm,EmiSchedule
 from .serializer import loanSerializer,EmiScheduleSerializer
 from rest_framework import generics, permissions, status
-from rest_framework.permissions import BasePermission,IsAuthenticated
+from rest_framework.permissions import BasePermission,IsAuthenticated,AllowAny
 from .utils import send_email
 from rest_framework.views import APIView
 from rest_framework.response import Response
