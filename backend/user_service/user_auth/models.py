@@ -13,6 +13,7 @@ class User(AbstractUser):
     )
 
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='borrower')
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
     salary = models.DecimalField(max_digits=10, decimal_places=2,default=0)
 
     def __str__(self):

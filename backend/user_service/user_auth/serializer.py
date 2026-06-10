@@ -41,13 +41,14 @@ class MyTokensObtainPairSerializer(TokenObtainPairSerializer):
 class UserRegisterSerializer(serializers.ModelSerializer):
     secret_key  = serializers.CharField(write_only = True, required = False, allow_blank = True)
     role = serializers.CharField(write_only = True, required = False, allow_blank = True)
+    phone_number = serializers.CharField(required=False, allow_blank=True)
     salary = serializers.DecimalField(max_digits=10, decimal_places=2)
 
 
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'secret_key', 'role','salary']
+        fields = ['username', 'email', 'password', 'secret_key', 'role', 'salary', 'phone_number']
         extra_kwargs = {'password':{'write_only':True}}
 
     def create(self, validated_data):
@@ -68,6 +69,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             password=validated_data['password'],
             email=validated_data['email'],
             salary = validated_data['salary'],
+            phone_number=validated_data.get('phone_number', ''),
             role=role
         )
         return user

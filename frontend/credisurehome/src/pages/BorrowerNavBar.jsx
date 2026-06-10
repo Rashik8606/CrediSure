@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react'
 import '../css/borrowerNavBar.css'
 
 
-const BorrowerNavBar = ({ darkMode, toggleTheme, hasActiveLoan, activePage }) => {
+const BorrowerNavBar = ({ darkMode, toggleTheme, hasActiveLoan, salary, activePage }) => {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
+  const [alertType, setAlertType] = useState('') // 'activeLoan' or 'salary'
 
 
   // const toggeleTheme = () => {
@@ -34,8 +35,13 @@ const BorrowerNavBar = ({ darkMode, toggleTheme, hasActiveLoan, activePage }) =>
   }, [showAlert])
 
   const handleApplyClick = (e) => {
-    if (hasActiveLoan) {
+    if (salary < 10000) {
       e.preventDefault()
+      alert("you have better salary try again after 1 day")
+      setMenuOpen(false)
+    } else if (hasActiveLoan) {
+      e.preventDefault()
+      setAlertType('activeLoan')
       setShowAlert(true)
       setMenuOpen(false)
     }
@@ -49,8 +55,14 @@ const BorrowerNavBar = ({ darkMode, toggleTheme, hasActiveLoan, activePage }) =>
       <div className={`bp-nav-alert ${showAlert ? 'visible' : ''} ${theme}`}>
         <span className="bp-nav-alert-icon">⚠️</span>
         <div>
-          <p className="bp-nav-alert-title">Active Loan Exists</p>
-          <p className="bp-nav-alert-sub">You already have an active loan. Please repay before applying again.</p>
+          <p className="bp-nav-alert-title">
+            {alertType === 'activeLoan' ? 'Active Loan Exists' : 'Low Salary'}
+          </p>
+          <p className="bp-nav-alert-sub">
+            {alertType === 'activeLoan' 
+              ? 'You already have an active loan. Please repay before applying again.' 
+              : 'You have better salary try again after 1 day'}
+          </p>
         </div>
         <button className="bp-nav-alert-close" onClick={() => setShowAlert(false)}>✕</button>
       </div>

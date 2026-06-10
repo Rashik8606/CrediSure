@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import API from '../api/user-service_axios'
+import API from '../api/axios'
+import UserAPI from '../api/user-service_axios'
 import '../css/borrower-dashboard.css'
 import PageFooter from './PageFooter'
 import BorrowerNavBar from './BorrowerNavBar'
@@ -22,6 +23,7 @@ const BorrowerPage = () => {
 
   const [loading, setLoading] = useState(true)
   const [loanInfo, setLoanInfo] = useState(null)
+  const [salary, setSalary] = useState(0)
   const [mounted, setMounted] = useState(false)
 
   const [darkMode, setDarkMode] = useState(() => {
@@ -36,11 +38,15 @@ const BorrowerPage = () => {
   }
 
   useEffect(() => {
-    API.get('/loans/borrower/active_loan/')
-      .then((res) => {
-        console.log('API RESPONSE:', res.data) // ✅ DEBUG
-
-        setLoanInfo(res.data || null)
+    // Fetch loan info and profile data in parallel
+    Promise.all([
+      API.get('/loans/borrower/active_loan/'),
+      UserAPI.get('/profile/').catch(err => ({ data: { salary: 0 } }))
+    ])
+      .then(([loanRes, profileRes]) => {
+        console.log('API RESPONSE:', loanRes.data) // ✅ DEBUG
+        setLoanInfo(loanRes.data || null)
+        setSalary(Number(profileRes?.data?.salary) || 0)
         setLoading(false)
         setTimeout(() => setMounted(true), 50)
       })
@@ -82,6 +88,7 @@ const BorrowerPage = () => {
         darkMode={darkMode}
         toggleTheme={toggleTheme}
         hasActiveLoan={hasActiveLoan}
+        salary={salary}
         activePage='dashboard'
       />
 
@@ -122,7 +129,12 @@ const BorrowerPage = () => {
             <div className="bp-apply-card">
               <h2>No Pending EMI</h2>
               <p>Your loan is fully paid. You can apply for a new loan.</p>
-              <a href="/loan-request-form" className="bp-apply-btn">
+              <a href="/loan-request-form" className="bp-apply-btn" onClick={(e) => {
+                if (salary < 10000) {
+                  e.preventDefault()
+                  alert("you have better salary try again after 1 day")
+                }
+              }}>
                 Apply for Loan →
               </a>
             </div>

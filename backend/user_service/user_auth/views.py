@@ -24,7 +24,7 @@ class RegisterView(APIView):
         if serializer.is_valid():
             user = serializer.save()
 
-            refresh = RefreshToken.for_user(user)
+            refresh = MyTokensObtainPairSerializer.get_token(user)
             return Response(
                 {
                     'access':str(refresh.access_token),

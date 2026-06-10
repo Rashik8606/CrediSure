@@ -49,7 +49,7 @@ const LoanRequestForm = () => {
       navigate('/kyc-verification', { state: { loanId } })
     } catch (err) {
       console.log(err.response || err)
-      setError(err.response?.data?.detail || 'Failed to submit loan application')
+      setError(err.response?.data?.detail || err.response?.data?.error || 'Failed to submit loan application')
     }
   }
 

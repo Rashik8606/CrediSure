@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'user_auth',
     'rest_framework',
     'rest_framework_simplejwt',
-    'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
 ]
 REST_FRAMEWORK = {
@@ -156,3 +155,5 @@ import os
 load_dotenv()
 
 ADMIN_SECRET_KEY = os.getenv('ADMIN_SECRET_KEY') 
+
+SECRET_KEY = os.getenv("JWT_SECRET_KEY")

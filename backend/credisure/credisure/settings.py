@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-4k7l7%xm45wtwd$uiv*&#528j#1agk8s0o3(xkjgn1ps577zn+'
+SECRET_KEY = 'django-insecure-e$j3qg6u#owc6_7m509j*2)xcnm3zf)dj3_o)u%gn#+yqznucc'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'home',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,9 +43,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
-    'home',
     'loans',
-    'django_extensions',
+    # 'django_extensions',
     'paymentgateway'
 
     
@@ -52,7 +52,7 @@ INSTALLED_APPS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES':(
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'home.authentication.CustomJWTAuthentication',
     ),
 
     'DEFAULT_PERMISSION_CLASSES':(
@@ -167,7 +167,6 @@ load_dotenv()
 ADMIN_SECRET_KEY = os.getenv('ADMIN_SECRET_KEY') 
 
 
-
 # Email Setup >>>>
 EMAIL_BACKEND = os.getenv('EMAIL_BACKEND')
 EMAIL_HOST = os.getenv('EMAIL_HOST')
@@ -179,3 +178,4 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 
 
+SECRET_KEY = os.getenv("JWT_SECRET_KEY")
