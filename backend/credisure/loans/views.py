@@ -165,55 +165,129 @@ class LoanKycUploadView(APIView):
 
     def post(self, request, loan_id):
         try:
-            loan = loanRequestForm.objects.get(id=loan_id, borrower = request.user)
+            loan = loanRequestForm.objects.get(
+                id=loan_id,
+                borrower=request.user
+            )
+
         except loanRequestForm.DoesNotExist:
-            return Response({'error':'Loan not found or not authorized'}, status=status.HTTP_404_NOT_FOUND)
-        
-        serializer = loanSerializer(loan, data = request.data, partial = True)
+            return Response(
+                {'error': 'Loan not found or not authorized'},
+                status=404
+            )
+
+        serializer = loanSerializer(
+            loan,
+            data=request.data,
+            partial=True
+        )
+
         if serializer.is_valid():
-            serializer.save(kyc_status='UNDER_REVIEW')
 
-            User = get_user_model()
-            admins = User.objects.filter(role = 'admin')
-            admin_emails = [admin.email for admin in admins]
-    
-            subject = f"KYC Completed by {request.user.username}"
-            message = f"""
-            <html>
-            <body style="font-family:Arial,sans-serif; background-color:#f9f9f9; padding:20px;">
-             <div style="background-color:#ffffff; border-radius:8px; padding:20px; max-width:600px; margin:auto; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
-                 <h2 style="color:#007bff;">New Loan Request</h2>
-                 <p><b>Borrower:</b> {request.user.username}</p>
-                 <p><b>Amount:</b> ₹{loan.amount}</p>
-                 <p><b>Purpose:</b> {loan.purpose}</p>
-                 <p>Please review this request in the admin dashboard.</p>
-             </div>
-                <div style="background-color:#ffffff; border-radius:8px; padding:20px; max-width:600px; margin:auto; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
-                    <h2 style="color:#28a745;">KYC Submitted</h2>
-                    <p>Borrower <b>{request.user.username}</b> has completed their KYC verification.</p>
-                    <p>Please review the attached documents in the admin panel.</p>
-                </div>
-            </body>
-            </html>
-            """
+            serializer.save(
+                kyc_status='UNDER_REVIEW'
+            )
 
-            email = EmailMultiAlternatives(subject, '', to=admin_emails)
-            email.attach_alternative(message, 'text/html')
-            
-            if loan.aadhaar_front:
-                email.attach_file(loan.aadhaar_front.path)
-            if loan.aadhaar_back:
-                email.attach_file(loan.aadhaar_back.path)
-            if loan.pan_card:
-                email.attach_file(loan.pan_card.path)
-            if loan.selfie:
-                email.attach_file(loan.selfie.path)
+            # GET ADMIN USERS FROM USER SERVICE
+            admin_emails = []
 
-            email.send(fail_silently = False)
+            try:
+                token = request.headers.get("Authorization")
 
-            return Response({'message':'KYC Upload Successfully completed..',
-                             'loan':loanSerializer(loan).data}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                response = requests.get(
+                    "http://127.0.0.1:8002/api/admin-users/",
+                    headers={
+                        "Authorization": token
+                    }
+                )
+
+                if response.status_code == 200:
+                    admins = response.json()
+
+                    admin_emails = [
+                        admin["email"]
+                        for admin in admins
+                        if admin.get("email")
+                    ]
+
+            except Exception as e:
+                print("ADMIN FETCH ERROR:", e)
+
+            # SEND EMAIL ONLY IF ADMINS EXIST
+            if admin_emails:
+
+                subject = f"KYC Completed by {request.user.username}"
+
+                message = f"""
+                <html>
+                <body>
+                    <h2>KYC Submitted</h2>
+
+                    <p>
+                    Borrower:
+                    {request.user.username}
+                    </p>
+
+                    <p>
+                    Amount:
+                    ₹{loan.amount}
+                    </p>
+
+                    <p>
+                    Purpose:
+                    {loan.purpose}
+                    </p>
+                </body>
+                </html>
+                """
+
+                email = EmailMultiAlternatives(
+                    subject,
+                    '',
+                    to=admin_emails
+                )
+
+                email.attach_alternative(
+                    message,
+                    'text/html'
+                )
+
+                if loan.aadhaar_front:
+                    email.attach_file(
+                        loan.aadhaar_front.path
+                    )
+
+                if loan.aadhaar_back:
+                    email.attach_file(
+                        loan.aadhaar_back.path
+                    )
+
+                if loan.pan_card:
+                    email.attach_file(
+                        loan.pan_card.path
+                    )
+
+                if loan.selfie:
+                    email.attach_file(
+                        loan.selfie.path
+                    )
+
+                email.send(
+                    fail_silently=True
+                )
+
+            return Response(
+                {
+                    'message': 'KYC Upload Successfully completed',
+                    'loan': loanSerializer(loan).data
+                },
+                status=200
+            )
+
+        return Response(
+            serializer.errors,
+            status=400
+        )
     
 
 
