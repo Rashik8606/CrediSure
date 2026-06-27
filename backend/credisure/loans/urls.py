@@ -19,10 +19,10 @@ urlpatterns = [
     path('next-emi/',NextEmiView.as_view()),
 
     #EMI URL
-    # path('<int:pk>/approve/',LoanViewSet.as_view({'post':'approve'}), name='loan-approve'),
-    # path('<int:pk>/reject/',LoanViewSet.as_view({'post':'reject'}),name='loan-reject'),
-    # path('<int:loan_id>/emi/', LoanViewSet.as_view({'get': 'emis'}), name='loan-emi'),
-    # path('<int:loan_id>/pay_emi/',LoanViewSet.as_view({'post':'pay_emi'}),name='loan-pay-emi'),
+    path('<int:pk>/approve/',LoanViewSet.as_view({'post':'approve'}), name='loan-approve'),
+    path('<int:pk>/reject/',LoanViewSet.as_view({'post':'reject'}),name='loan-reject'),
+    path('<int:loan_id>/emi/', LoanViewSet.as_view({'get': 'emis'}), name='loan-emi'),
+    path('<int:loan_id>/pay_emi/',LoanViewSet.as_view({'post':'pay_emi'}),name='loan-pay-emi'),
     path('<int:loan_id>/emi-schedule/',LoanEmiListView.as_view(),name='loan-emi-schedule'),
 
 

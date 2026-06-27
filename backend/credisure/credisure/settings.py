@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
-    'loans',
+    'loans.apps.LoansConfig',
     # 'django_extensions',
     'paymentgateway'
 

@@ -13,7 +13,7 @@ import requests
 
 
 class CreateEmiPaymentView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     
 
     def post(self, request):
@@ -107,7 +107,7 @@ class VerifyEmiPaymentsView(APIView):
 
             # 👇 CALL MAIN BACKEND WITH TOKEN
             res = requests.post(
-                f'http://127.0.0.1:8000/api/loans/emi/{payment.emi_id}/pay',
+                f'http://127.0.0.1:8000/api/loans/emi/{payment.emi_id}/pay/',
                 json={'payment_id': payment.payment_id},
                 headers={
                     'Authorization': token
